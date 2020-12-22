@@ -5,8 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Start_Launcher"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Start Launcher" Height="450" Width="800">
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Menu x:Name="TopMenu" Margin="5">
+            <MenuItem Header="Options">
+                <MenuItem Header="Launch on startup" Name="LaunchOnStartup" IsCheckable="True" IsChecked="True" Click="LaunchOnStartup_Click"/>
+            </MenuItem>
+        </Menu>
     </Grid>
 </Window>

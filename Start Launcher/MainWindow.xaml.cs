@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Start_Launcher
 {
@@ -20,9 +8,19 @@ namespace Start_Launcher
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static StartLauncher.PersistentSettings.Settings Settings { get; private set; }
         public MainWindow()
         {
+            StartLauncher.PersistentSettings.Settings.InitialiseFile();
+            Settings = StartLauncher.PersistentSettings.Settings.ReadFromFile();
             InitializeComponent();
+            LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
+        }
+
+        private void LaunchOnStartup_Click(object sender, RoutedEventArgs e)
+        {
+            var launch = sender as MenuItem;
+            Settings.LaunchOnStartup = launch.IsChecked;
         }
     }
 }
