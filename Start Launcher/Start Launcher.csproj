@@ -5,6 +5,21 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>StartLauncher</RootNamespace>
     <UseWPF>true</UseWPF>
+    <Version>0.1.0</Version>
+    <Authors>Piotr Kowalski</Authors>
+    <PackageLicenseExpression>MIT License</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/KowalskiPiotr98/StartLauncher</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/KowalskiPiotr98/StartLauncher</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
 </Project>
