@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Win32;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -146,6 +147,29 @@ namespace StartLauncher
             else
             {
                 OrderDown.IsEnabled = true;
+            }
+        }
+
+        private void AddStartApp_Click(object sender, RoutedEventArgs args)
+        {
+            var ofd = new OpenFileDialog
+            {
+                Filter = "EXE files (*.exe)|*.exe"
+            };
+            var res = ofd.ShowDialog();
+            if (res.HasValue && res.Value)
+            {
+                try
+                {
+                    Settings.AddStartObject(new PersistentSettings.StartObjects.StartApplication(ofd.FileName, int.MaxValue));
+                    StartAppsListView.ItemsSource = StartObjects;
+                    StartAppsListView.Items.Refresh();
+                    StartAppsListView.SelectedIndex = -1;
+                }
+                catch (System.ArgumentException)
+                {
+                    MessageBox.Show($"Application already exists on the list", "Unable", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
         }
     }
