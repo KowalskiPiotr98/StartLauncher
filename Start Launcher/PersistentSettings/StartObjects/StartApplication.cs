@@ -13,11 +13,25 @@ namespace StartLauncher.PersistentSettings.StartObjects
         }
         public StartApplication(string location, int launchOrder) : base(location, location.Split('\\').Last(), launchOrder)
         {
-
+            if (!System.IO.File.Exists(Location))
+            {
+                throw new System.IO.FileNotFoundException("Application file not found", Location);
+            }
+            if (!Location.EndsWith(".exe"))
+            {
+                throw new System.IO.FileFormatException("Only executable files are allowed");
+            }
         }
         public StartApplication(string location, string userGivenName, int launchOrder) : base(location, userGivenName, launchOrder)
         {
-
+            if (!System.IO.File.Exists(Location))
+            {
+                throw new System.IO.FileNotFoundException("Application file not found", Location);
+            }
+            if (!Location.EndsWith(".exe"))
+            {
+                throw new System.IO.FileFormatException("Only executable files are allowed");
+            }
         }
 
         public override bool Run()
