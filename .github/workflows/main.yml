@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - Sprint**
+      - SL-**
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
