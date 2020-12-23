@@ -46,6 +46,10 @@ namespace StartLauncher.PersistentSettings
         }
         public void RemoveStartObject(int order)
         {
+            if (order < 1)
+            {
+                throw new System.ArgumentOutOfRangeException(nameof(order));
+            }
             startApps.RemoveAll(a => a.LaunchOrder == order);
             foreach (var apps in GetGetAllStartObjects().Where(l => l.LaunchOrder > order))
             {
