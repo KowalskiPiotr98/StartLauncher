@@ -25,6 +25,7 @@
             <StackPanel Margin="5" Grid.Column="1" Orientation="Vertical" DataContext="{Binding ElementName=StartAppsListView, Path=SelectedItem}">
                 <TextBox Text="{Binding Path=UserGivenName}" x:Name="UserGivenNameText" LostFocus="UserGivenNameText_LostFocus"/>
                 <TextBlock Text="{Binding Path=Location}" TextWrapping="WrapWithOverflow"/>
+                <Button x:Name="ObjectDelete" Content="Delete" Background="Red" Click="ObjectDelete_Click"/>
             </StackPanel>
         </Grid>
     </Grid>

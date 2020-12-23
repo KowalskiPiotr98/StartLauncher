@@ -10,7 +10,7 @@ namespace StartLauncher
     public partial class StartupObjectsWindow : Window
     {
         public PersistentSettings.Settings Settings { get; set; }
-        public ObservableCollection<PersistentSettings.StartObjects.StartObject> StartObjects { get; private set; }
+        public ObservableCollection<PersistentSettings.StartObjects.StartObject> StartObjects => new ObservableCollection<PersistentSettings.StartObjects.StartObject>(Settings.GetGetAllStartObjects());
         public StartupObjectsWindow()
         {
             InitializeComponent();
@@ -18,7 +18,7 @@ namespace StartLauncher
         public StartupObjectsWindow(PersistentSettings.Settings settings)
         {
             Settings = settings;
-            StartObjects = new ObservableCollection<PersistentSettings.StartObjects.StartObject>(settings.GetGetAllStartObjects());
+            //StartObjects = new ObservableCollection<PersistentSettings.StartObjects.StartObject>(settings.GetGetAllStartObjects());
             InitializeComponent();
         }
 
@@ -40,6 +40,19 @@ namespace StartLauncher
             StartAppsListView.Items.Refresh();
             StartAppsListView.SelectedIndex = -1;
             Settings.SaveToFile();
+        }
+
+        private void ObjectDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (StartAppsListView.SelectedIndex == -1)
+            {
+                return;
+            }
+            Settings.RemoveStartObject((StartAppsListView.SelectedItem as PersistentSettings.StartObjects.StartObject).LaunchOrder);
+            Settings.SaveToFile();
+            StartAppsListView.ItemsSource = StartObjects;
+            StartAppsListView.Items.Refresh();
+            StartAppsListView.SelectedIndex = -1;
         }
     }
 }
