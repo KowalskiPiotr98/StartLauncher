@@ -1,18 +1,18 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Start_Launcher
+namespace StartLauncher
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static StartLauncher.PersistentSettings.Settings Settings { get; private set; }
+        public static PersistentSettings.Settings Settings { get; private set; }
         public MainWindow()
         {
-            StartLauncher.PersistentSettings.Settings.InitialiseFile();
-            Settings = StartLauncher.PersistentSettings.Settings.ReadFromFile();
+            PersistentSettings.Settings.InitialiseFile();
+            Settings = PersistentSettings.Settings.ReadFromFile();
             InitializeComponent();
             LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
         }

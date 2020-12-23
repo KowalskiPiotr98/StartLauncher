@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace StartLauncher.PersistentSettings
@@ -11,10 +13,37 @@ namespace StartLauncher.PersistentSettings
         private static readonly string PERSISTENT_FOLDER_PATH = $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)}\\StartLauncher";
         private static readonly string SETTING_FILE_PATH = $"{PERSISTENT_FOLDER_PATH}\\settings.json";
         private bool launchOnStartup = true;
+        public readonly List<StartObjects.StartApplication> startApps = new List<StartObjects.StartApplication>();
+
         /// <summary>
         /// Indicates whether the app should launch on system startup
         /// </summary>
         public bool LaunchOnStartup { get => launchOnStartup; set { launchOnStartup = value; SaveToFile(); StartupLaunch.Switch(value); } }
+        /// <summary>
+        /// This property is only for JSON serialization and should not be used to get or set the actual list
+        /// </summary>
+        public List<StartObjects.StartApplication> StartAppsJSONProperty { get => startApps; set { startApps.Clear(); startApps.AddRange(value); } }
+
+        public List<StartObjects.StartObject> GetGetAllStartObjects()
+        {
+            return startApps.Cast<StartObjects.StartObject>().OrderBy(s => s.LaunchOrder).ToList();
+        }
+        public void AddStartObject(StartObjects.StartObject startObject)
+        {
+            if (GetGetAllStartObjects().Count < startObject.LaunchOrder)
+            {
+                startObject.LaunchOrder = GetGetAllStartObjects().Count + 1;
+            }
+            else
+            {
+                foreach (var presentStartObjects in GetGetAllStartObjects().Where(s => s.LaunchOrder >= startObject.LaunchOrder))
+                {
+                    presentStartObjects.LaunchOrder++;
+                }
+            }
+            startObject.AddListToSettings(this);
+            SaveToFile();
+        }
 
         /// <summary>
         /// Saves current settings to file
@@ -42,6 +71,7 @@ namespace StartLauncher.PersistentSettings
             {
                 var settingsJson = File.ReadAllText(SETTING_FILE_PATH);
                 var settings = JsonSerializer.Deserialize<Settings>(settingsJson);
+                settings.SaveToFile();//TODO: do somethig so that this isn't necessary
                 return settings;
             }
             catch (JsonException)
