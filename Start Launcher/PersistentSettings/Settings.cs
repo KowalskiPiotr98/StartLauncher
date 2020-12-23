@@ -44,6 +44,15 @@ namespace StartLauncher.PersistentSettings
             startObject.AddListToSettings(this);
             SaveToFile();
         }
+        public void RemoveStartObject(int order)
+        {
+            startApps.RemoveAll(a => a.LaunchOrder == order);
+            foreach (var apps in GetGetAllStartObjects().Where(l => l.LaunchOrder > order))
+            {
+                apps.LaunchOrder--;
+            }
+            SaveToFile();
+        }
 
         /// <summary>
         /// Saves current settings to file
@@ -71,6 +80,17 @@ namespace StartLauncher.PersistentSettings
             {
                 var settingsJson = File.ReadAllText(SETTING_FILE_PATH);
                 var settings = JsonSerializer.Deserialize<Settings>(settingsJson);
+                foreach (var appLauncher in settings.startApps.ToList())
+                {
+                    try
+                    {
+                        appLauncher.Validate();
+                    }
+                    catch (System.Exception)
+                    {
+                        settings.RemoveStartObject(appLauncher.LaunchOrder);//TODO: inform a user instead
+                    }
+                }
                 settings.SaveToFile();//TODO: do somethig so that this isn't necessary
                 return settings;
             }
