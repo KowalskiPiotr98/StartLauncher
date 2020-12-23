@@ -72,7 +72,7 @@ namespace StartLauncher
             }
             catch (System.ArgumentException)
             {
-                return;
+                //Reorder failed, quietly return
             }
         }
 
@@ -94,7 +94,7 @@ namespace StartLauncher
             }
             catch (System.ArgumentException)
             {
-                return;
+                //Reorder failed, quietly return
             }
         }
 
@@ -119,7 +119,6 @@ namespace StartLauncher
             catch (System.ArgumentException)
             {
                 text.Text = (StartAppsListView.SelectedIndex + 1).ToString();
-                return;
             }
         }
 
