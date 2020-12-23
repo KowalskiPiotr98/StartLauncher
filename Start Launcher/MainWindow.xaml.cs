@@ -22,5 +22,15 @@ namespace Start_Launcher
             var launch = sender as MenuItem;
             Settings.LaunchOnStartup = launch.IsChecked;
         }
+
+        private async void LaunchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            IsEnabled = false;
+
+            //TODO: execute
+
+            System.Environment.Exit(0);
+        }
     }
 }
