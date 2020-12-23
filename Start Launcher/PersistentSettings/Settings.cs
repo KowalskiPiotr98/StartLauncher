@@ -6,7 +6,7 @@
         private static readonly string SETTING_FILE_PATH = $"{PERSISTENT_FOLDER_PATH}\\settings.json";
         private bool launchOnStartup = true;
 
-        public bool LaunchOnStartup { get => launchOnStartup; set { launchOnStartup = value; SaveToFile(); } }
+        public bool LaunchOnStartup { get => launchOnStartup; set { launchOnStartup = value; SaveToFile(); StartupLaunch.Switch(value); } }
         public void SaveToFile()
         {
             if (!System.IO.Directory.Exists(PERSISTENT_FOLDER_PATH))

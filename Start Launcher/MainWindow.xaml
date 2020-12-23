@@ -10,8 +10,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Menu x:Name="TopMenu" Margin="5">
-            <MenuItem Header="Options">
+        <Menu x:Name="TopMenu">
+            <MenuItem Margin="5,0,5,0" Header="Options">
                 <MenuItem Header="Launch on startup" Name="LaunchOnStartup" IsCheckable="True" IsChecked="True" Click="LaunchOnStartup_Click"/>
             </MenuItem>
         </Menu>
