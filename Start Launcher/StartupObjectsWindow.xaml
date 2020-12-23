@@ -19,13 +19,18 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <ListView Margin="5" Grid.Column="0" x:Name="StartAppsListView" SelectionMode="Single" ItemsSource="{Binding ElementName=window, Path=StartObjects}">
+            <ListView Margin="5" Grid.Column="0" x:Name="StartAppsListView" SelectionMode="Single" ItemsSource="{Binding ElementName=window, Path=StartObjects}" SelectionChanged="StartAppsListView_SelectionChanged">
 
             </ListView>
-            <StackPanel Margin="5" Grid.Column="1" Orientation="Vertical" DataContext="{Binding ElementName=StartAppsListView, Path=SelectedItem}">
+            <StackPanel x:Name="SettingsPanel" IsEnabled="False" Margin="5" Grid.Column="1" Orientation="Vertical" DataContext="{Binding ElementName=StartAppsListView, Path=SelectedItem}">
                 <TextBox Text="{Binding Path=UserGivenName}" x:Name="UserGivenNameText" LostFocus="UserGivenNameText_LostFocus"/>
                 <TextBlock Text="{Binding Path=Location}" TextWrapping="WrapWithOverflow"/>
-                <Button x:Name="ObjectDelete" Content="Delete" Background="Red" Click="ObjectDelete_Click"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="5" x:Name="OrderUp" Content="Up" Click="OrderUp_Click"/>
+                    <TextBox x:Name="OrderTextBox" Margin="5" Text="{Binding Path=LaunchOrder}" Width="30" LostFocus="OrderTextBox_TextChanged"/>
+                    <Button Margin="5" x:Name="OrderDown" Content="Down" Click="OrderDown_Click"/>
+                    <Button Margin="5" x:Name="ObjectDelete" Content="Delete" Background="Red" Click="ObjectDelete_Click"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>

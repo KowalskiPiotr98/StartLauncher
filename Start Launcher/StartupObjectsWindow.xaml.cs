@@ -18,7 +18,6 @@ namespace StartLauncher
         public StartupObjectsWindow(PersistentSettings.Settings settings)
         {
             Settings = settings;
-            //StartObjects = new ObservableCollection<PersistentSettings.StartObjects.StartObject>(settings.GetGetAllStartObjects());
             InitializeComponent();
         }
 
@@ -49,10 +48,105 @@ namespace StartLauncher
                 return;
             }
             Settings.RemoveStartObject((StartAppsListView.SelectedItem as PersistentSettings.StartObjects.StartObject).LaunchOrder);
-            Settings.SaveToFile();
             StartAppsListView.ItemsSource = StartObjects;
             StartAppsListView.Items.Refresh();
             StartAppsListView.SelectedIndex = -1;
+        }
+
+        private void OrderUp_Click(object sender, RoutedEventArgs e)
+        {
+            var selIndex = StartAppsListView.SelectedIndex + 1;
+            if (selIndex == 0)
+            {
+                return;
+            }
+            try
+            {
+                Settings.ReorderStartObject(selIndex, selIndex - 1);
+                StartAppsListView.ItemsSource = StartObjects;
+                StartAppsListView.Items.Refresh();
+                StartAppsListView.SelectedIndex = selIndex - 2;
+                OrderTextBox.Text = (selIndex - 1).ToString();
+                StartAppsListView_SelectionChanged(StartAppsListView, null);
+            }
+            catch (System.ArgumentException)
+            {
+                return;
+            }
+        }
+
+        private void OrderDown_Click(object sender, RoutedEventArgs e)
+        {
+            var selIndex = StartAppsListView.SelectedIndex + 1;
+            if (selIndex == 0)
+            {
+                return;
+            }
+            try
+            {
+                Settings.ReorderStartObject(selIndex, selIndex + 1);
+                StartAppsListView.ItemsSource = StartObjects;
+                StartAppsListView.Items.Refresh();
+                StartAppsListView.SelectedIndex = selIndex;
+                OrderTextBox.Text = (selIndex + 1).ToString();
+                StartAppsListView_SelectionChanged(StartAppsListView, null);
+            }
+            catch (System.ArgumentException)
+            {
+                return;
+            }
+        }
+
+        private void OrderTextBox_TextChanged(object sender, RoutedEventArgs e)
+        {
+            var text = sender as TextBox;
+            int selIndex;
+            if (!int.TryParse(text.Text, out selIndex))
+            {
+                text.Text = (StartAppsListView.SelectedIndex + 1).ToString();
+                return;
+            }
+            try
+            {
+                Settings.ReorderStartObject(StartAppsListView.SelectedIndex + 1, selIndex);
+                StartAppsListView.ItemsSource = StartObjects;
+                StartAppsListView.Items.Refresh();
+                StartAppsListView.SelectedIndex = selIndex - 1;
+                OrderTextBox.Text = (selIndex).ToString();
+                StartAppsListView_SelectionChanged(StartAppsListView, null);
+            }
+            catch (System.ArgumentException)
+            {
+                text.Text = (StartAppsListView.SelectedIndex + 1).ToString();
+                return;
+            }
+        }
+
+        private void StartAppsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var view = sender as ListView;
+            if (view.SelectedIndex == -1)
+            {
+                SettingsPanel.IsEnabled = false;
+                return;
+            }
+            SettingsPanel.IsEnabled = true;
+            if (view.SelectedIndex == 0)
+            {
+                OrderUp.IsEnabled = false;
+            }
+            else
+            {
+                OrderUp.IsEnabled = true;
+            }
+            if (view.SelectedIndex == Settings.GetGetAllStartObjects().Count - 1)
+            {
+                OrderDown.IsEnabled = false;
+            }
+            else
+            {
+                OrderDown.IsEnabled = true;
+            }
         }
     }
 }
