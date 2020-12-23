@@ -30,6 +30,10 @@ namespace StartLauncher.PersistentSettings
         }
         public void AddStartObject(StartObjects.StartObject startObject)
         {
+            if (GetGetAllStartObjects().Any(o => o.Location == startObject.Location))
+            {
+                throw new System.ArgumentException("Object already exists", nameof(startObject));
+            }
             if (GetGetAllStartObjects().Count < startObject.LaunchOrder)
             {
                 startObject.LaunchOrder = GetGetAllStartObjects().Count + 1;
@@ -55,6 +59,43 @@ namespace StartLauncher.PersistentSettings
             {
                 apps.LaunchOrder--;
             }
+            SaveToFile();
+        }
+        public void ReorderStartObject(int oldIndex, int newIndex)
+        {
+            if (oldIndex < 1)
+            {
+                throw new System.ArgumentOutOfRangeException(nameof(oldIndex));
+            }
+            if (newIndex < 1)
+            {
+                throw new System.ArgumentOutOfRangeException(nameof(newIndex));
+            }
+            var allObjects = GetGetAllStartObjects();
+            if (oldIndex > allObjects.Count)
+            {
+                throw new System.ArgumentOutOfRangeException(nameof(oldIndex));
+            }
+            if (newIndex > allObjects.Count)
+            {
+                throw new System.ArgumentOutOfRangeException(nameof(newIndex));
+            }
+            var startObject = allObjects.First(o => o.LaunchOrder == oldIndex);
+            if (newIndex < oldIndex)
+            {
+                foreach (var @object in allObjects.Where(o => o.LaunchOrder >= newIndex && o.LaunchOrder < oldIndex))
+                {
+                    @object.LaunchOrder++;
+                }
+            }
+            else
+            {
+                foreach (var @object in allObjects.Where(o => o.LaunchOrder <= newIndex && o.LaunchOrder > oldIndex))
+                {
+                    @object.LaunchOrder--;
+                }
+            }
+            startObject.LaunchOrder = newIndex;
             SaveToFile();
         }
 

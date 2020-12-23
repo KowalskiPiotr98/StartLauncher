@@ -39,7 +39,10 @@
             }
             LaunchOrder = launchOrder;
         }
-
+        public override string ToString()
+        {
+            return UserGivenName;
+        }
         /// <summary>
         /// Method running the object
         /// </summary>
