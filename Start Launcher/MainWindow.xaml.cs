@@ -32,5 +32,12 @@ namespace StartLauncher
 
             System.Environment.Exit(0);
         }
+
+        private void ModLaunchApps_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new StartupObjectsWindow(Settings);
+            settingsWindow.Show();
+            Close();
+        }
     }
 }

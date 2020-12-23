@@ -30,6 +30,10 @@ namespace StartLauncher.PersistentSettings
         }
         public void AddStartObject(StartObjects.StartObject startObject)
         {
+            if (GetGetAllStartObjects().Any(o => o.Location == startObject.Location))
+            {
+                throw new System.ArgumentException("Object already exists", nameof(startObject));
+            }
             if (GetGetAllStartObjects().Count < startObject.LaunchOrder)
             {
                 startObject.LaunchOrder = GetGetAllStartObjects().Count + 1;
