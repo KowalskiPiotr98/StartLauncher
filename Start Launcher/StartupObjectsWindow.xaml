@@ -13,6 +13,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Margin="5" Content="Add application" x:Name="AddStartApp" Click="AddStartApp_Click"/>
+            <Button Margin="5" Content="Add url" x:Name="AddStartUrl" Click="AddStartUrl_Click"/>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
