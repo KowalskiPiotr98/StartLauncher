@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace StartLauncher.PersistentSettings.StartObjects
 {
@@ -32,10 +33,18 @@ namespace StartLauncher.PersistentSettings.StartObjects
             }
         }
 
-        public override bool Run()
+        public override Task<bool> Run() => Task.Run(() =>
         {
-            throw new System.NotImplementedException();
-        }
+            try
+            {
+                _ = System.Diagnostics.Process.Start(Location);
+                return true;
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
+        });
 
         internal override void AddListToSettings(Settings settings)
         {

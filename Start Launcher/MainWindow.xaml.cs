@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace StartLauncher
@@ -25,12 +26,28 @@ namespace StartLauncher
 
         private async void LaunchButton_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
             IsEnabled = false;
-
-            //TODO: execute
-
-            System.Environment.Exit(0);
+            Hide();
+            var failed = false;
+            var failedNames = new StringBuilder();
+            foreach (var start in Settings.GetGetAllStartObjects())
+            {
+                if (!await start.Run())
+                {
+                    failed = true;
+                    failedNames.AppendLine(start.UserGivenName);
+                }
+            }
+            if (failed)
+            {
+                MessageBox.Show($"Some programs failed to launch:\n{failedNames}", "Launch failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                IsEnabled = true;
+                Show();
+            }
+            else
+            {
+                System.Environment.Exit(0);
+            }
         }
 
         private void ModLaunchApps_Click(object sender, RoutedEventArgs e)
