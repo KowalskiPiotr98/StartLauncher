@@ -1,18 +1,19 @@
-﻿using System.Windows;
+﻿using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 
-namespace Start_Launcher
+namespace StartLauncher
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static StartLauncher.PersistentSettings.Settings Settings { get; private set; }
+        public static PersistentSettings.Settings Settings { get; private set; }
         public MainWindow()
         {
-            StartLauncher.PersistentSettings.Settings.InitialiseFile();
-            Settings = StartLauncher.PersistentSettings.Settings.ReadFromFile();
+            PersistentSettings.Settings.InitialiseFile();
+            Settings = PersistentSettings.Settings.ReadFromFile();
             InitializeComponent();
             LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
         }
@@ -25,12 +26,35 @@ namespace Start_Launcher
 
         private async void LaunchButton_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
             IsEnabled = false;
+            Hide();
+            var failed = false;
+            var failedNames = new StringBuilder();
+            foreach (var start in Settings.GetGetAllStartObjects())
+            {
+                if (!await start.Run())
+                {
+                    failed = true;
+                    failedNames.AppendLine(start.UserGivenName);
+                }
+            }
+            if (failed)
+            {
+                MessageBox.Show($"Some programs failed to launch:\n{failedNames}", "Launch failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                IsEnabled = true;
+                Show();
+            }
+            else
+            {
+                System.Environment.Exit(0);
+            }
+        }
 
-            //TODO: execute
-
-            System.Environment.Exit(0);
+        private void ModLaunchApps_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new StartupObjectsWindow(Settings);
+            settingsWindow.Show();
+            Close();
         }
     }
 }
