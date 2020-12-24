@@ -1,4 +1,6 @@
-﻿namespace StartLauncher.PersistentSettings.StartObjects
+﻿using System.Threading.Tasks;
+
+namespace StartLauncher.PersistentSettings.StartObjects
 {
     /// <summary>
     /// Abstract class defining an object to run on button press
@@ -47,7 +49,7 @@
         /// Method running the object
         /// </summary>
         /// <returns>True if object launched successfully, false otherwise</returns>
-        public abstract bool Run();
+        public abstract Task<bool> Run();
         internal abstract void AddListToSettings(Settings settings);
     }
 }
