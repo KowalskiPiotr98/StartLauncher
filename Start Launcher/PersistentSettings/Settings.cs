@@ -14,6 +14,7 @@ namespace StartLauncher.PersistentSettings
         private static readonly string SETTING_FILE_PATH = $"{PERSISTENT_FOLDER_PATH}\\settings.json";
         private bool launchOnStartup = true;
         public readonly List<StartObjects.StartApplication> startApps = new List<StartObjects.StartApplication>();
+        public readonly List<StartObjects.StartUrl> startUrls = new List<StartObjects.StartUrl>();
 
         /// <summary>
         /// Indicates whether the app should launch on system startup
@@ -23,10 +24,11 @@ namespace StartLauncher.PersistentSettings
         /// This property is only for JSON serialization and should not be used to get or set the actual list
         /// </summary>
         public List<StartObjects.StartApplication> StartAppsJSONProperty { get => startApps; set { startApps.Clear(); startApps.AddRange(value); } }
+        public List<StartObjects.StartUrl> StartUrlsJSONProperty { get => startUrls; set { startUrls.Clear(); startUrls.AddRange(value); } }
 
         public List<StartObjects.StartObject> GetGetAllStartObjects()
         {
-            return startApps.Cast<StartObjects.StartObject>().OrderBy(s => s.LaunchOrder).ToList();
+            return startApps.Cast<StartObjects.StartObject>().Concat(startUrls.Cast<StartObjects.StartObject>()).OrderBy(s => s.LaunchOrder).ToList();
         }
         public void AddStartObject(StartObjects.StartObject startObject)
         {
@@ -55,6 +57,7 @@ namespace StartLauncher.PersistentSettings
                 throw new System.ArgumentOutOfRangeException(nameof(order));
             }
             startApps.RemoveAll(a => a.LaunchOrder == order);
+            startUrls.RemoveAll(a => a.LaunchOrder == order);
             foreach (var apps in GetGetAllStartObjects().Where(l => l.LaunchOrder > order))
             {
                 apps.LaunchOrder--;
