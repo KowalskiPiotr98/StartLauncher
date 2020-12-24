@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace StartLauncher.PersistentSettings.StartObjects
@@ -34,7 +35,12 @@ namespace StartLauncher.PersistentSettings.StartObjects
         {
             try
             {
-                _ = System.Diagnostics.Process.Start(Location);
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = Location,
+                    UseShellExecute = true
+                };
+                _ = Process.Start(psi);
                 return true;
             }
             catch (System.Exception)
