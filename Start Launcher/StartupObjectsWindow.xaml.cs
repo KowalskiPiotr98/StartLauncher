@@ -171,5 +171,25 @@ namespace StartLauncher
                 }
             }
         }
+
+        private void AddStartUrl_Click(object sender, RoutedEventArgs e)
+        {
+            var urlPicker = new UrlPickerWindow();
+            urlPicker.ShowDialog();
+            if (urlPicker.Confirmed)
+            {
+                try
+                {
+                    Settings.AddStartObject(new PersistentSettings.StartObjects.StartUrl(urlPicker.Url, int.MaxValue));
+                    StartAppsListView.ItemsSource = StartObjects;
+                    StartAppsListView.Items.Refresh();
+                    StartAppsListView.SelectedIndex = -1;
+                }
+                catch (System.ArgumentException)
+                {
+                    MessageBox.Show($"Unable to add URL", "Unable", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
     }
 }
