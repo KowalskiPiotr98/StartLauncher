@@ -37,6 +37,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -156,15 +164,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Start Launcher"
-        "ProductCode" = "8:{F60D94B3-0BA8-499D-991F-016AE8D41413}"
-        "PackageCode" = "8:{A93CBF38-9673-40EF-BDC4-2335DDDF5231}"
+        "ProductCode" = "8:{51853CDA-0594-4F06-930D-A8010C738BA3}"
+        "PackageCode" = "8:{78284D26-BA33-4E54-8BB5-7EA6935CF65C}"
         "UpgradeCode" = "8:{B63C1354-07EA-4858-8094-8FF7DE3F85FF}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.1.0"
+        "ProductVersion" = "8:0.2.0"
         "Manufacturer" = "8:Start Launcher"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
