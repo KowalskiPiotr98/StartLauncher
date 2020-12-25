@@ -10,7 +10,11 @@ namespace StartLauncher.PersistentSettings
     /// </summary>
     public class Settings
     {
+#if RELEASE
         private static readonly string PERSISTENT_FOLDER_PATH = $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)}\\StartLauncher";
+#else
+        private static readonly string PERSISTENT_FOLDER_PATH = $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)}\\StartLauncher-DEBUG";
+#endif
         private static readonly string SETTING_FILE_PATH = $"{PERSISTENT_FOLDER_PATH}\\settings.json";
         private bool launchOnStartup = true;
         public readonly List<StartObjects.StartApplication> startApps = new List<StartObjects.StartApplication>();

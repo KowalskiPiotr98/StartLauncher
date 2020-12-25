@@ -56,5 +56,12 @@ namespace StartLauncher
             settingsWindow.Show();
             Close();
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+#if DEBUG
+            PersistentSettings.StartupLaunch.Disable();
+#endif
+        }
     }
 }
