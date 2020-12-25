@@ -12,9 +12,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Build project
+      - name: restore nuget
+        run: dotnet restore
+      - name: Generate msi
         run: |
-          dotnet publish -r win-x64 -c Release /p:PublishSingleFile=true -o ./Build --no-self-contained
+          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.com" '.\Start Launcher.sln' /rebuild "Release|Any CPU" /project .\Installer\Installer.vdproj
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -32,6 +34,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./Build/Start Launcher.exe
-          asset_name: StartLauncher.exe
+          asset_path: ./Installer/Release/StartLauncher-win64-Installer.msi
+          asset_name: StartLauncher-win64-installer.msi
           asset_content_type: application/vnd.microsoft.portable-executable
