@@ -161,9 +161,7 @@ namespace StartLauncher
                 try
                 {
                     Settings.AddStartObject(new PersistentSettings.StartObjects.StartApplication(ofd.FileName, int.MaxValue));
-                    StartAppsListView.ItemsSource = StartObjects;
-                    StartAppsListView.Items.Refresh();
-                    StartAppsListView.SelectedIndex = -1;
+                    HandleAddingItems();
                 }
                 catch (System.ArgumentException)
                 {
@@ -174,22 +172,38 @@ namespace StartLauncher
 
         private void AddStartUrl_Click(object sender, RoutedEventArgs e)
         {
-            var urlPicker = new UrlPickerWindow();
+            var urlPicker = new LaunchObjectsPickers.UrlPickerWindow();
             urlPicker.ShowDialog();
             if (urlPicker.Confirmed)
             {
                 try
                 {
                     Settings.AddStartObject(new PersistentSettings.StartObjects.StartUrl(urlPicker.Url, int.MaxValue));
-                    StartAppsListView.ItemsSource = StartObjects;
-                    StartAppsListView.Items.Refresh();
-                    StartAppsListView.SelectedIndex = -1;
+                    HandleAddingItems();
                 }
                 catch (System.ArgumentException)
                 {
                     MessageBox.Show($"Unable to add URL", "Unable", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
+        }
+
+        private void AddStoreApp_Click(object sender, RoutedEventArgs e)
+        {
+            var storeAppPicker = new LaunchObjectsPickers.StoreAppsPicker(Settings);
+            storeAppPicker.ShowDialog();
+            if (storeAppPicker.StartApplication != null)
+            {
+                Settings.AddStartObject(storeAppPicker.StartApplication);
+                HandleAddingItems();
+            }
+        }
+
+        private void HandleAddingItems()
+        {
+            StartAppsListView.ItemsSource = StartObjects;
+            StartAppsListView.Items.Refresh();
+            StartAppsListView.SelectedIndex = -1;
         }
     }
 }

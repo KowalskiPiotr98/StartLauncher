@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace StartLauncher
+namespace StartLauncher.LaunchObjectsPickers
 {
     /// <summary>
     /// Interaction logic for UrlPicker.xaml
