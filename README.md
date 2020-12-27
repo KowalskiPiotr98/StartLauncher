@@ -10,4 +10,4 @@ Possible use cases include:
 
 # This is still just a pre-release. Expect bugs and ocasional breaking changes.
 
-MSI installator is included in the newest release. The program required .NET Core Desktop runtime. If you don't gave it currently installed, the installer will point you to the download site.
+MSI installator is included in the newest release. The program required .NET Core Desktop runtime. If you don't have it currently installed, the installer will point you to the download site.

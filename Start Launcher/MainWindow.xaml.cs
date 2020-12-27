@@ -9,11 +9,14 @@ namespace StartLauncher
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static PersistentSettings.Settings Settings { get; private set; }
+        public PersistentSettings.Settings Settings { get; private set; }
+
+        private readonly PersistentSettings.StartObjects.StartObjectsManager _startObjectsManager;
         public MainWindow()
         {
             PersistentSettings.Settings.InitialiseFile();
             Settings = PersistentSettings.Settings.ReadFromFile();
+            _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(Settings);
             InitializeComponent();
             LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
         }
@@ -30,7 +33,7 @@ namespace StartLauncher
             Hide();
             var failed = false;
             var failedNames = new StringBuilder();
-            foreach (var start in Settings.GetGetAllStartObjects())
+            foreach (var start in _startObjectsManager.GetGetAllStartObjects())
             {
                 if (!await start.Run())
                 {

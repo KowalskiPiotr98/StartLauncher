@@ -11,7 +11,8 @@ namespace StartLauncher
     public partial class StartupObjectsWindow : Window
     {
         public PersistentSettings.Settings Settings { get; set; }
-        public ObservableCollection<PersistentSettings.StartObjects.StartObject> StartObjects => new ObservableCollection<PersistentSettings.StartObjects.StartObject>(Settings.GetGetAllStartObjects());
+        private readonly PersistentSettings.StartObjects.StartObjectsManager _startObjectsManager;
+        public ObservableCollection<PersistentSettings.StartObjects.StartObject> StartObjects => new ObservableCollection<PersistentSettings.StartObjects.StartObject>(_startObjectsManager.GetGetAllStartObjects());
         public StartupObjectsWindow()
         {
             InitializeComponent();
@@ -19,6 +20,7 @@ namespace StartLauncher
         public StartupObjectsWindow(PersistentSettings.Settings settings)
         {
             Settings = settings;
+            _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(settings);
             InitializeComponent();
         }
 
@@ -48,7 +50,7 @@ namespace StartLauncher
             {
                 return;
             }
-            Settings.RemoveStartObject((StartAppsListView.SelectedItem as PersistentSettings.StartObjects.StartObject).LaunchOrder);
+            _startObjectsManager.RemoveStartObject((StartAppsListView.SelectedItem as PersistentSettings.StartObjects.StartObject).LaunchOrder);
             StartAppsListView.ItemsSource = StartObjects;
             StartAppsListView.Items.Refresh();
             StartAppsListView.SelectedIndex = -1;
@@ -63,7 +65,7 @@ namespace StartLauncher
             }
             try
             {
-                Settings.ReorderStartObject(selIndex, selIndex - 1);
+                _startObjectsManager.ReorderStartObject(selIndex, selIndex - 1);
                 StartAppsListView.ItemsSource = StartObjects;
                 StartAppsListView.Items.Refresh();
                 StartAppsListView.SelectedIndex = selIndex - 2;
@@ -85,7 +87,7 @@ namespace StartLauncher
             }
             try
             {
-                Settings.ReorderStartObject(selIndex, selIndex + 1);
+                _startObjectsManager.ReorderStartObject(selIndex, selIndex + 1);
                 StartAppsListView.ItemsSource = StartObjects;
                 StartAppsListView.Items.Refresh();
                 StartAppsListView.SelectedIndex = selIndex;
@@ -109,7 +111,7 @@ namespace StartLauncher
             }
             try
             {
-                Settings.ReorderStartObject(StartAppsListView.SelectedIndex + 1, selIndex);
+                _startObjectsManager.ReorderStartObject(StartAppsListView.SelectedIndex + 1, selIndex);
                 StartAppsListView.ItemsSource = StartObjects;
                 StartAppsListView.Items.Refresh();
                 StartAppsListView.SelectedIndex = selIndex - 1;
@@ -139,7 +141,7 @@ namespace StartLauncher
             {
                 OrderUp.IsEnabled = true;
             }
-            if (view.SelectedIndex == Settings.GetGetAllStartObjects().Count - 1)
+            if (view.SelectedIndex == _startObjectsManager.GetGetAllStartObjects().Count - 1)
             {
                 OrderDown.IsEnabled = false;
             }
@@ -160,7 +162,7 @@ namespace StartLauncher
             {
                 try
                 {
-                    Settings.AddStartObject(new PersistentSettings.StartObjects.StartApplication(ofd.FileName, int.MaxValue));
+                    _startObjectsManager.AddStartObject(new PersistentSettings.StartObjects.StartApplication(ofd.FileName, int.MaxValue));
                     HandleAddingItems();
                 }
                 catch (System.ArgumentException)
@@ -178,7 +180,7 @@ namespace StartLauncher
             {
                 try
                 {
-                    Settings.AddStartObject(new PersistentSettings.StartObjects.StartUrl(urlPicker.Url, int.MaxValue));
+                    _startObjectsManager.AddStartObject(new PersistentSettings.StartObjects.StartUrl(urlPicker.Url, int.MaxValue));
                     HandleAddingItems();
                 }
                 catch (System.ArgumentException)
@@ -194,7 +196,7 @@ namespace StartLauncher
             storeAppPicker.ShowDialog();
             if (storeAppPicker.StartApplication != null)
             {
-                Settings.AddStartObject(storeAppPicker.StartApplication);
+                _startObjectsManager.AddStartObject(storeAppPicker.StartApplication);
                 HandleAddingItems();
             }
         }
