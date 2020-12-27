@@ -25,7 +25,7 @@ namespace StartLauncher
             }
             else
             {
-                timer.Stop();
+                timer?.Stop();
             }
         }
 

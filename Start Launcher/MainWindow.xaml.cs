@@ -16,6 +16,7 @@ namespace StartLauncher
         {
             PersistentSettings.Settings.InitialiseFile();
             Settings = PersistentSettings.Settings.ReadFromFile();
+            App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds);
             _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(Settings);
             InitializeComponent();
             LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
@@ -66,6 +67,17 @@ namespace StartLauncher
             PersistentSettings.StartupLaunch.Disable();
 #endif
             App.CurrentApp.AutoShutdownCancelled = true;
+        }
+
+        private void ShutdownTimerSet_Click(object sender, RoutedEventArgs e)
+        {
+            App.CurrentApp.AutoShutdownCancelled = true;
+            var shutdownTimerWindor = new ShutdownTimerPicker(Settings);
+            shutdownTimerWindor.ShowDialog();
+            if (shutdownTimerWindor.Confirmed)
+            {
+                Settings.ShutdownTimerSeconds = shutdownTimerWindor.ShutdownTimerSeconds;
+            }
         }
     }
 }

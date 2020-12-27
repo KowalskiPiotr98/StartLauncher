@@ -27,7 +27,7 @@ namespace StartLauncher.PersistentSettings
         /// Indicates whether the app should launch on system startup
         /// </summary>
         public bool LaunchOnStartup { get => launchOnStartup; set { launchOnStartup = value; SaveToFile(); StartupLaunch.Switch(value); } }
-        public int? ShutdownTimerSeconds { get => shutdownTimerSeconds; set { shutdownTimerSeconds = value; SaveToFile(); App.CurrentApp.SetTimer(value); } }
+        public int? ShutdownTimerSeconds { get => shutdownTimerSeconds; set { shutdownTimerSeconds = value; SaveToFile(); } }
         /// <summary>
         /// This property is only for JSON serialization and should not be used to get or set the actual list
         /// </summary>
