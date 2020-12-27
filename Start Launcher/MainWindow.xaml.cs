@@ -49,7 +49,7 @@ namespace StartLauncher
             }
             else
             {
-                System.Environment.Exit(0);
+                Application.Current.Shutdown();
             }
         }
 
@@ -65,6 +65,7 @@ namespace StartLauncher
 #if DEBUG
             PersistentSettings.StartupLaunch.Disable();
 #endif
+            App.CurrentApp.AutoShutdownCancelled = true;
         }
     }
 }
