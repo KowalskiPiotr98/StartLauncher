@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace StartLauncher.PersistentSettings
 {
@@ -17,6 +18,7 @@ namespace StartLauncher.PersistentSettings
 #endif
         private static readonly string SETTING_FILE_PATH = $"{PERSISTENT_FOLDER_PATH}\\settings.json";
         private bool launchOnStartup = true;
+        private int? shutdownTimerSeconds;
 
         public readonly List<StartObjects.StartApplication> startApps = new List<StartObjects.StartApplication>();
         public readonly List<StartObjects.StartUrl> startUrls = new List<StartObjects.StartUrl>();
@@ -25,12 +27,14 @@ namespace StartLauncher.PersistentSettings
         /// Indicates whether the app should launch on system startup
         /// </summary>
         public bool LaunchOnStartup { get => launchOnStartup; set { launchOnStartup = value; SaveToFile(); StartupLaunch.Switch(value); } }
+        public int? ShutdownTimerSeconds { get => shutdownTimerSeconds; set { shutdownTimerSeconds = value; SaveToFile(); } }
         /// <summary>
         /// This property is only for JSON serialization and should not be used to get or set the actual list
         /// </summary>
         public List<StartObjects.StartApplication> StartAppsJSONProperty { get => startApps; set { startApps.Clear(); startApps.AddRange(value); } }
         public List<StartObjects.StartUrl> StartUrlsJSONProperty { get => startUrls; set { startUrls.Clear(); startUrls.AddRange(value); } }
 
+        [JsonIgnore]
         public bool SkipSavingToFile { get; set; }
 
         public Settings()
@@ -106,11 +110,12 @@ namespace StartLauncher.PersistentSettings
 
         public static Settings GetDefaultSettings()
         {
-            return new Settings
+            var defaultSettings = new Settings
             {
-                SkipSavingToFile = false,
-                LaunchOnStartup = true
+                launchOnStartup = true
             };
+            defaultSettings.SkipSavingToFile = false;
+            return defaultSettings;
         }
     }
 }
