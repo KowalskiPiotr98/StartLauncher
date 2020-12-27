@@ -33,6 +33,22 @@ namespace StartLauncher
         private void UserGivenNameText_LostFocus(object sender, RoutedEventArgs e)
         {
             var text = sender as TextBox;
+            if (text.IsEnabled)
+            {
+                SaveCustomObjectName(text);
+            }
+        }
+
+        private void UserGivenNameText_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                SaveCustomObjectName(sender as TextBox);
+            }
+        }
+
+        private void SaveCustomObjectName(TextBox text)
+        {
             if (string.IsNullOrWhiteSpace(text.Text))
             {
                 text.Text = (StartAppsListView.SelectedItem as PersistentSettings.StartObjects.StartObject).UserGivenName;
