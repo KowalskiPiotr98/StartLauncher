@@ -28,6 +28,8 @@ namespace StartLauncher.PersistentSettings
         /// </summary>
         public bool LaunchOnStartup { get => launchOnStartup; set { launchOnStartup = value; SaveToFile(); StartupLaunch.Switch(value); } }
         public int? ShutdownTimerSeconds { get => shutdownTimerSeconds; set { shutdownTimerSeconds = value; SaveToFile(); } }
+        public List<LaunchProfiles.LaunchProfile> LaunchProfiles { get; set; }
+        public string DefaultLaunchProfile { get; set; }
         /// <summary>
         /// This property is only for JSON serialization and should not be used to get or set the actual list
         /// </summary>
@@ -84,6 +86,16 @@ namespace StartLauncher.PersistentSettings
                         startObjectsManager.RemoveStartObject(appLauncher.LaunchOrder);//TODO: inform a user instead
                         settings.SaveToFile();
                     }
+                }
+                var launchProfileManager = new LaunchProfiles.LaunchProfileManager(settings);
+                if (settings.LaunchProfiles is null || settings.LaunchProfiles.Count == 0)
+                {
+                    settings.LaunchProfiles = new List<LaunchProfiles.LaunchProfile>();
+                    launchProfileManager.Add("default");
+                }
+                if (string.IsNullOrEmpty(settings.DefaultLaunchProfile))
+                {
+                    launchProfileManager.MakeDefault(settings.LaunchProfiles.First().Id);
                 }
                 return settings;
             }

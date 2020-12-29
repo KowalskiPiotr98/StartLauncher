@@ -79,5 +79,12 @@ namespace StartLauncher
                 Settings.ShutdownTimerSeconds = shutdownTimerWindor.ShutdownTimerSeconds;
             }
         }
+
+        private void SetLaunchProfiles_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new PersistentSettings.LaunchProfiles.LaunchProfilesEditor(Settings);
+            settingsWindow.Show();
+            Close();
+        }
     }
 }
