@@ -97,9 +97,10 @@ namespace StartLauncher.PersistentSettings
                 {
                     launchProfileManager.MakeDefault(settings.LaunchProfiles.First().Id);
                 }
-                foreach (var item in startObjectsManager.GetGetAllStartObjects().Where(s => s.LaunchPofileId is null || launchProfileManager.FindById(s.LaunchPofileId) is null))
+                foreach (var item in startObjectsManager.GetGetAllStartObjects(true).Where(s => s.LaunchPofileId is null || launchProfileManager.FindById(s.LaunchPofileId) is null))
                 {
                     item.LaunchPofileId = launchProfileManager.GetDefault().Id;
+                    settings.SaveToFile();
                 }
                 return settings;
             }

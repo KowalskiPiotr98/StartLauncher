@@ -6,17 +6,21 @@ namespace StartLauncher.PersistentSettings.StartObjects
     public class StartObjectsManager
     {
         private readonly Settings _settings;
-        private string currentProfileId;
+        public string CurrentProfileId { get; private set; }
 
         public StartObjectsManager(Settings settings)
         {
             _settings = settings;
-            currentProfileId = settings.DefaultLaunchProfile;
+            CurrentProfileId = settings.DefaultLaunchProfile;
         }
 
         public List<StartObject> GetGetAllStartObjects()
         {
-            return _settings.startApps.Cast<StartObject>().Concat(_settings.startUrls.Cast<StartObject>()).Where(s => s.LaunchPofileId == currentProfileId).OrderBy(s => s.LaunchOrder).ToList();
+            return _settings.startApps.Cast<StartObject>().Concat(_settings.startUrls.Cast<StartObject>()).Where(s => s.LaunchPofileId == CurrentProfileId).OrderBy(s => s.LaunchOrder).ToList();
+        }
+        public List<StartObject> GetGetAllStartObjects(bool ignoreProfile)
+        {
+            return _settings.startApps.Cast<StartObject>().Concat(_settings.startUrls.Cast<StartObject>()).Where(s => ignoreProfile || s.LaunchPofileId == CurrentProfileId).OrderBy(s => s.LaunchOrder).ToList();
         }
         public void AddStartObject(StartObject startObject)
         {
@@ -35,6 +39,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
                     presentStartObjects.LaunchOrder++;
                 }
             }
+            startObject.LaunchPofileId = CurrentProfileId;
             startObject.AddListToSettings(_settings);
             _settings.SaveToFile();
         }
@@ -44,8 +49,8 @@ namespace StartLauncher.PersistentSettings.StartObjects
             {
                 throw new System.ArgumentOutOfRangeException(nameof(order));
             }
-            _settings.startApps.RemoveAll(a => a.LaunchPofileId == currentProfileId && a.LaunchOrder == order);
-            _settings.startUrls.RemoveAll(a => a.LaunchPofileId == currentProfileId && a.LaunchOrder == order);
+            _settings.startApps.RemoveAll(a => a.LaunchPofileId == CurrentProfileId && a.LaunchOrder == order);
+            _settings.startUrls.RemoveAll(a => a.LaunchPofileId == CurrentProfileId && a.LaunchOrder == order);
             foreach (var apps in GetGetAllStartObjects().Where(l => l.LaunchOrder > order))
             {
                 apps.LaunchOrder--;
@@ -91,7 +96,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
         }
         public void SwitchToProfile(string launchProfile)
         {
-            currentProfileId = launchProfile;
+            CurrentProfileId = launchProfile;
         }
         public void SwitchToProfile(LaunchProfiles.LaunchProfile launchProfile)
         {

@@ -50,5 +50,25 @@ namespace StartLauncher.PersistentSettings.LaunchProfiles
             _settings.LaunchProfiles.RemoveAll(l => l.Id == id);
             _settings.SaveToFile();
         }
+        public void NextProfile(StartObjects.StartObjectsManager startObjectsManager)
+        {
+            var profile = FindById(startObjectsManager.CurrentProfileId);
+            var profileIndex = _settings.LaunchProfiles.IndexOf(profile);
+            if (profileIndex == _settings.LaunchProfiles.Count - 1)
+            {
+                return;
+            }
+            startObjectsManager.SwitchToProfile(_settings.LaunchProfiles[profileIndex + 1]);
+        }
+        public void PrevProfile(StartObjects.StartObjectsManager startObjectsManager)
+        {
+            var profile = FindById(startObjectsManager.CurrentProfileId);
+            var profileIndex = _settings.LaunchProfiles.IndexOf(profile);
+            if (profileIndex == 0)
+            {
+                return;
+            }
+            startObjectsManager.SwitchToProfile(_settings.LaunchProfiles[profileIndex - 1]);
+        }
     }
 }
