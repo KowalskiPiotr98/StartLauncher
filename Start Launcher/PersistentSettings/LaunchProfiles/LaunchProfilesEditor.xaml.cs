@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace StartLauncher.PersistentSettings.LaunchProfiles
 {
@@ -9,13 +8,11 @@ namespace StartLauncher.PersistentSettings.LaunchProfiles
     /// </summary>
     public partial class LaunchProfilesEditor : Window
     {
-        private readonly Settings _settings;
         private readonly LaunchProfileManager _manager;
 
         public ObservableCollection<LaunchProfile> LaunchProfiles { get; set; }
         public LaunchProfilesEditor(Settings settings)
         {
-            _settings = settings;
             _manager = new LaunchProfileManager(settings);
             LaunchProfiles = new ObservableCollection<LaunchProfile>(_manager.GetAll());
             InitializeComponent();
