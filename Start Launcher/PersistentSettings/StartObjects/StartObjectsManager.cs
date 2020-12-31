@@ -6,15 +6,17 @@ namespace StartLauncher.PersistentSettings.StartObjects
     public class StartObjectsManager
     {
         private readonly Settings _settings;
+        private string currentProfileId;
 
         public StartObjectsManager(Settings settings)
         {
             _settings = settings;
+            currentProfileId = settings.DefaultLaunchProfile;
         }
 
         public List<StartObject> GetGetAllStartObjects()
         {
-            return _settings.startApps.Cast<StartObject>().Concat(_settings.startUrls.Cast<StartObject>()).OrderBy(s => s.LaunchOrder).ToList();
+            return _settings.startApps.Cast<StartObject>().Concat(_settings.startUrls.Cast<StartObject>()).Where(s => s.LaunchPofileId == currentProfileId).OrderBy(s => s.LaunchOrder).ToList();
         }
         public void AddStartObject(StartObject startObject)
         {
@@ -42,8 +44,8 @@ namespace StartLauncher.PersistentSettings.StartObjects
             {
                 throw new System.ArgumentOutOfRangeException(nameof(order));
             }
-            _settings.startApps.RemoveAll(a => a.LaunchOrder == order);
-            _settings.startUrls.RemoveAll(a => a.LaunchOrder == order);
+            _settings.startApps.RemoveAll(a => a.LaunchPofileId == currentProfileId && a.LaunchOrder == order);
+            _settings.startUrls.RemoveAll(a => a.LaunchPofileId == currentProfileId && a.LaunchOrder == order);
             foreach (var apps in GetGetAllStartObjects().Where(l => l.LaunchOrder > order))
             {
                 apps.LaunchOrder--;
@@ -86,6 +88,14 @@ namespace StartLauncher.PersistentSettings.StartObjects
             }
             startObject.LaunchOrder = newIndex;
             _settings.SaveToFile();
+        }
+        public void SwitchToProfile(string launchProfile)
+        {
+            currentProfileId = launchProfile;
+        }
+        public void SwitchToProfile(LaunchProfiles.LaunchProfile launchProfile)
+        {
+            SwitchToProfile(launchProfile.Id);
         }
     }
 }

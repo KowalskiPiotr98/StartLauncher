@@ -97,6 +97,10 @@ namespace StartLauncher.PersistentSettings
                 {
                     launchProfileManager.MakeDefault(settings.LaunchProfiles.First().Id);
                 }
+                foreach (var item in startObjectsManager.GetGetAllStartObjects().Where(s => s.LaunchPofileId is null || launchProfileManager.FindById(s.LaunchPofileId) is null))
+                {
+                    item.LaunchPofileId = launchProfileManager.GetDefault().Id;
+                }
                 return settings;
             }
             catch (JsonException)
