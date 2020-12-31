@@ -11,14 +11,16 @@ namespace StartLauncher
     public partial class StartupObjectsWindow : Window
     {
         public PersistentSettings.Settings Settings { get; set; }
-        public ObservableCollection<PersistentSettings.StartObjects.StartObject> StartObjects => new ObservableCollection<PersistentSettings.StartObjects.StartObject>(Settings.GetGetAllStartObjects());
+        private readonly PersistentSettings.StartObjects.StartObjectsManager _startObjectsManager;
+        public ObservableCollection<PersistentSettings.StartObjects.StartObject> StartObjects => new ObservableCollection<PersistentSettings.StartObjects.StartObject>(_startObjectsManager.GetGetAllStartObjects());
         public StartupObjectsWindow()
         {
             InitializeComponent();
         }
-        public StartupObjectsWindow(PersistentSettings.Settings settings)
+        public StartupObjectsWindow(PersistentSettings.Settings settings, PersistentSettings.StartObjects.StartObjectsManager startObjectsManager)
         {
             Settings = settings;
+            _startObjectsManager = startObjectsManager;
             InitializeComponent();
         }
 
@@ -31,6 +33,22 @@ namespace StartLauncher
         private void UserGivenNameText_LostFocus(object sender, RoutedEventArgs e)
         {
             var text = sender as TextBox;
+            if (text.IsEnabled)
+            {
+                SaveCustomObjectName(text);
+            }
+        }
+
+        private void UserGivenNameText_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                SaveCustomObjectName(sender as TextBox);
+            }
+        }
+
+        private void SaveCustomObjectName(TextBox text)
+        {
             if (string.IsNullOrWhiteSpace(text.Text))
             {
                 text.Text = (StartAppsListView.SelectedItem as PersistentSettings.StartObjects.StartObject).UserGivenName;
@@ -48,7 +66,7 @@ namespace StartLauncher
             {
                 return;
             }
-            Settings.RemoveStartObject((StartAppsListView.SelectedItem as PersistentSettings.StartObjects.StartObject).LaunchOrder);
+            _startObjectsManager.RemoveStartObject((StartAppsListView.SelectedItem as PersistentSettings.StartObjects.StartObject).LaunchOrder);
             StartAppsListView.ItemsSource = StartObjects;
             StartAppsListView.Items.Refresh();
             StartAppsListView.SelectedIndex = -1;
@@ -63,7 +81,7 @@ namespace StartLauncher
             }
             try
             {
-                Settings.ReorderStartObject(selIndex, selIndex - 1);
+                _startObjectsManager.ReorderStartObject(selIndex, selIndex - 1);
                 StartAppsListView.ItemsSource = StartObjects;
                 StartAppsListView.Items.Refresh();
                 StartAppsListView.SelectedIndex = selIndex - 2;
@@ -85,7 +103,7 @@ namespace StartLauncher
             }
             try
             {
-                Settings.ReorderStartObject(selIndex, selIndex + 1);
+                _startObjectsManager.ReorderStartObject(selIndex, selIndex + 1);
                 StartAppsListView.ItemsSource = StartObjects;
                 StartAppsListView.Items.Refresh();
                 StartAppsListView.SelectedIndex = selIndex;
@@ -109,7 +127,7 @@ namespace StartLauncher
             }
             try
             {
-                Settings.ReorderStartObject(StartAppsListView.SelectedIndex + 1, selIndex);
+                _startObjectsManager.ReorderStartObject(StartAppsListView.SelectedIndex + 1, selIndex);
                 StartAppsListView.ItemsSource = StartObjects;
                 StartAppsListView.Items.Refresh();
                 StartAppsListView.SelectedIndex = selIndex - 1;
@@ -139,7 +157,7 @@ namespace StartLauncher
             {
                 OrderUp.IsEnabled = true;
             }
-            if (view.SelectedIndex == Settings.GetGetAllStartObjects().Count - 1)
+            if (view.SelectedIndex == _startObjectsManager.GetGetAllStartObjects().Count - 1)
             {
                 OrderDown.IsEnabled = false;
             }
@@ -160,10 +178,8 @@ namespace StartLauncher
             {
                 try
                 {
-                    Settings.AddStartObject(new PersistentSettings.StartObjects.StartApplication(ofd.FileName, int.MaxValue));
-                    StartAppsListView.ItemsSource = StartObjects;
-                    StartAppsListView.Items.Refresh();
-                    StartAppsListView.SelectedIndex = -1;
+                    _startObjectsManager.AddStartObject(new PersistentSettings.StartObjects.StartApplication(ofd.FileName, int.MaxValue));
+                    HandleAddingItems();
                 }
                 catch (System.ArgumentException)
                 {
@@ -174,22 +190,38 @@ namespace StartLauncher
 
         private void AddStartUrl_Click(object sender, RoutedEventArgs e)
         {
-            var urlPicker = new UrlPickerWindow();
+            var urlPicker = new LaunchObjectsPickers.UrlPickerWindow();
             urlPicker.ShowDialog();
             if (urlPicker.Confirmed)
             {
                 try
                 {
-                    Settings.AddStartObject(new PersistentSettings.StartObjects.StartUrl(urlPicker.Url, int.MaxValue));
-                    StartAppsListView.ItemsSource = StartObjects;
-                    StartAppsListView.Items.Refresh();
-                    StartAppsListView.SelectedIndex = -1;
+                    _startObjectsManager.AddStartObject(new PersistentSettings.StartObjects.StartUrl(urlPicker.Url, int.MaxValue));
+                    HandleAddingItems();
                 }
                 catch (System.ArgumentException)
                 {
                     MessageBox.Show($"Unable to add URL", "Unable", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
+        }
+
+        private void AddStoreApp_Click(object sender, RoutedEventArgs e)
+        {
+            var storeAppPicker = new LaunchObjectsPickers.StoreAppsPicker(_startObjectsManager);
+            storeAppPicker.ShowDialog();
+            if (storeAppPicker.StartApplication != null)
+            {
+                _startObjectsManager.AddStartObject(storeAppPicker.StartApplication);
+                HandleAddingItems();
+            }
+        }
+
+        private void HandleAddingItems()
+        {
+            StartAppsListView.ItemsSource = StartObjects;
+            StartAppsListView.Items.Refresh();
+            StartAppsListView.SelectedIndex = -1;
         }
     }
 }

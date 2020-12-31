@@ -19,6 +19,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
         /// Order in the list
         /// </summary>
         public int LaunchOrder { get; set; }
+        public string LaunchPofileId { get; set; }
 
         protected StartObject() { }
         protected StartObject(string location, int launchOrder)

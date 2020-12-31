@@ -13,6 +13,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Margin="5" Content="Add application" x:Name="AddStartApp" Click="AddStartApp_Click"/>
+            <Button Margin="5" Content="Add Store application" x:Name="AddStoreApp" Click="AddStoreApp_Click"/>
             <Button Margin="5" Content="Add url" x:Name="AddStartUrl" Click="AddStartUrl_Click"/>
         </StackPanel>
         <Grid Grid.Row="1">
@@ -24,7 +25,7 @@
 
             </ListView>
             <StackPanel x:Name="SettingsPanel" IsEnabled="False" Margin="5" Grid.Column="1" Orientation="Vertical" DataContext="{Binding ElementName=StartAppsListView, Path=SelectedItem}">
-                <TextBox Text="{Binding Path=UserGivenName}" x:Name="UserGivenNameText" LostFocus="UserGivenNameText_LostFocus"/>
+                <TextBox Text="{Binding Path=UserGivenName}" x:Name="UserGivenNameText" LostFocus="UserGivenNameText_LostFocus" KeyDown="UserGivenNameText_KeyDown"/>
                 <TextBlock Text="{Binding Path=Location}" TextWrapping="WrapWithOverflow"/>
                 <StackPanel Orientation="Horizontal">
                     <Button Margin="5" x:Name="OrderUp" Content="Up" Click="OrderUp_Click"/>

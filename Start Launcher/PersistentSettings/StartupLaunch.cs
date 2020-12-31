@@ -2,7 +2,11 @@
 {
     static class StartupLaunch
     {
+#if DEBUG
+        private static readonly string REGISTRY_KEY = "Start Launcher DEBUG";
+#else
         private static readonly string REGISTRY_KEY = "Start Launcher";
+#endif
         /// <summary>
         /// Enables app start on system boot
         /// </summary>

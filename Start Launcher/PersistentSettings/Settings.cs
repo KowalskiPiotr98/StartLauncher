@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace StartLauncher.PersistentSettings
 {
@@ -10,9 +11,15 @@ namespace StartLauncher.PersistentSettings
     /// </summary>
     public class Settings
     {
+#if RELEASE
         private static readonly string PERSISTENT_FOLDER_PATH = $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)}\\StartLauncher";
+#else
+        private static readonly string PERSISTENT_FOLDER_PATH = $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)}\\StartLauncher-DEBUG";
+#endif
         private static readonly string SETTING_FILE_PATH = $"{PERSISTENT_FOLDER_PATH}\\settings.json";
         private bool launchOnStartup = true;
+        private int? shutdownTimerSeconds;
+
         public readonly List<StartObjects.StartApplication> startApps = new List<StartObjects.StartApplication>();
         public readonly List<StartObjects.StartUrl> startUrls = new List<StartObjects.StartUrl>();
 
@@ -20,93 +27,31 @@ namespace StartLauncher.PersistentSettings
         /// Indicates whether the app should launch on system startup
         /// </summary>
         public bool LaunchOnStartup { get => launchOnStartup; set { launchOnStartup = value; SaveToFile(); StartupLaunch.Switch(value); } }
+        public int? ShutdownTimerSeconds { get => shutdownTimerSeconds; set { shutdownTimerSeconds = value; SaveToFile(); } }
+        public List<LaunchProfiles.LaunchProfile> LaunchProfiles { get; set; }
+        public string DefaultLaunchProfile { get; set; }
         /// <summary>
         /// This property is only for JSON serialization and should not be used to get or set the actual list
         /// </summary>
         public List<StartObjects.StartApplication> StartAppsJSONProperty { get => startApps; set { startApps.Clear(); startApps.AddRange(value); } }
         public List<StartObjects.StartUrl> StartUrlsJSONProperty { get => startUrls; set { startUrls.Clear(); startUrls.AddRange(value); } }
 
-        public List<StartObjects.StartObject> GetGetAllStartObjects()
-        {
-            return startApps.Cast<StartObjects.StartObject>().Concat(startUrls.Cast<StartObjects.StartObject>()).OrderBy(s => s.LaunchOrder).ToList();
-        }
-        public void AddStartObject(StartObjects.StartObject startObject)
-        {
-            if (GetGetAllStartObjects().Any(o => o.Location == startObject.Location))
-            {
-                throw new System.ArgumentException("Object already exists", nameof(startObject));
-            }
-            if (GetGetAllStartObjects().Count < startObject.LaunchOrder)
-            {
-                startObject.LaunchOrder = GetGetAllStartObjects().Count + 1;
-            }
-            else
-            {
-                foreach (var presentStartObjects in GetGetAllStartObjects().Where(s => s.LaunchOrder >= startObject.LaunchOrder))
-                {
-                    presentStartObjects.LaunchOrder++;
-                }
-            }
-            startObject.AddListToSettings(this);
-            SaveToFile();
-        }
-        public void RemoveStartObject(int order)
-        {
-            if (order < 1)
-            {
-                throw new System.ArgumentOutOfRangeException(nameof(order));
-            }
-            startApps.RemoveAll(a => a.LaunchOrder == order);
-            startUrls.RemoveAll(a => a.LaunchOrder == order);
-            foreach (var apps in GetGetAllStartObjects().Where(l => l.LaunchOrder > order))
-            {
-                apps.LaunchOrder--;
-            }
-            SaveToFile();
-        }
-        public void ReorderStartObject(int oldIndex, int newIndex)
-        {
-            if (oldIndex < 1)
-            {
-                throw new System.ArgumentOutOfRangeException(nameof(oldIndex));
-            }
-            if (newIndex < 1)
-            {
-                throw new System.ArgumentOutOfRangeException(nameof(newIndex));
-            }
-            var allObjects = GetGetAllStartObjects();
-            if (oldIndex > allObjects.Count)
-            {
-                throw new System.ArgumentOutOfRangeException(nameof(oldIndex));
-            }
-            if (newIndex > allObjects.Count)
-            {
-                throw new System.ArgumentOutOfRangeException(nameof(newIndex));
-            }
-            var startObject = allObjects.First(o => o.LaunchOrder == oldIndex);
-            if (newIndex < oldIndex)
-            {
-                foreach (var @object in allObjects.Where(o => o.LaunchOrder >= newIndex && o.LaunchOrder < oldIndex))
-                {
-                    @object.LaunchOrder++;
-                }
-            }
-            else
-            {
-                foreach (var @object in allObjects.Where(o => o.LaunchOrder <= newIndex && o.LaunchOrder > oldIndex))
-                {
-                    @object.LaunchOrder--;
-                }
-            }
-            startObject.LaunchOrder = newIndex;
-            SaveToFile();
-        }
+        [JsonIgnore]
+        public bool SkipSavingToFile { get; set; }
 
+        public Settings()
+        {
+            SkipSavingToFile = true;
+        }
         /// <summary>
         /// Saves current settings to file
         /// </summary>
         public void SaveToFile()
         {
+            if (SkipSavingToFile)
+            {
+                return;
+            }
             if (!Directory.Exists(PERSISTENT_FOLDER_PATH))
             {
                 _ = Directory.CreateDirectory(PERSISTENT_FOLDER_PATH);
@@ -128,6 +73,8 @@ namespace StartLauncher.PersistentSettings
             {
                 var settingsJson = File.ReadAllText(SETTING_FILE_PATH);
                 var settings = JsonSerializer.Deserialize<Settings>(settingsJson);
+                settings.SkipSavingToFile = false;
+                var startObjectsManager = new StartObjects.StartObjectsManager(settings);
                 foreach (var appLauncher in settings.startApps.ToList())
                 {
                     try
@@ -136,10 +83,25 @@ namespace StartLauncher.PersistentSettings
                     }
                     catch (System.Exception)
                     {
-                        settings.RemoveStartObject(appLauncher.LaunchOrder);//TODO: inform a user instead
+                        startObjectsManager.RemoveStartObject(appLauncher.LaunchOrder);//TODO: inform a user instead
+                        settings.SaveToFile();
                     }
                 }
-                settings.SaveToFile();//TODO: do somethig so that this isn't necessary
+                var launchProfileManager = new LaunchProfiles.LaunchProfileManager(settings);
+                if (settings.LaunchProfiles is null || settings.LaunchProfiles.Count == 0)
+                {
+                    settings.LaunchProfiles = new List<LaunchProfiles.LaunchProfile>();
+                    launchProfileManager.Add("default");
+                }
+                if (string.IsNullOrEmpty(settings.DefaultLaunchProfile))
+                {
+                    launchProfileManager.MakeDefault(settings.LaunchProfiles.First().Id);
+                }
+                foreach (var item in startObjectsManager.GetGetAllStartObjects(true).Where(s => s.LaunchPofileId is null || launchProfileManager.FindById(s.LaunchPofileId) is null))
+                {
+                    item.LaunchPofileId = launchProfileManager.GetDefault().Id;
+                    settings.SaveToFile();
+                }
                 return settings;
             }
             catch (JsonException)
@@ -158,9 +120,19 @@ namespace StartLauncher.PersistentSettings
             }
             if (!File.Exists(SETTING_FILE_PATH))
             {
-                var defaultSettings = new Settings();
-                File.WriteAllText(SETTING_FILE_PATH, JsonSerializer.Serialize(defaultSettings, new JsonSerializerOptions { IgnoreNullValues = true, WriteIndented = false }));
+                var defaultSettings = GetDefaultSettings();
+                defaultSettings.SaveToFile();
             }
+        }
+
+        public static Settings GetDefaultSettings()
+        {
+            var defaultSettings = new Settings
+            {
+                launchOnStartup = true
+            };
+            defaultSettings.SkipSavingToFile = false;
+            return defaultSettings;
         }
     }
 }

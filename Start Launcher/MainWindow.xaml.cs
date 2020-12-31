@@ -9,12 +9,19 @@ namespace StartLauncher
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static PersistentSettings.Settings Settings { get; private set; }
+        public PersistentSettings.Settings Settings { get; private set; }
+
+        private readonly PersistentSettings.StartObjects.StartObjectsManager _startObjectsManager;
+        private readonly PersistentSettings.LaunchProfiles.LaunchProfileManager _launchProfileManager;
         public MainWindow()
         {
             PersistentSettings.Settings.InitialiseFile();
             Settings = PersistentSettings.Settings.ReadFromFile();
+            App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds);
+            _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(Settings);
+            _launchProfileManager = new PersistentSettings.LaunchProfiles.LaunchProfileManager(Settings);
             InitializeComponent();
+            SetProfileName();
             LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
         }
 
@@ -30,7 +37,7 @@ namespace StartLauncher
             Hide();
             var failed = false;
             var failedNames = new StringBuilder();
-            foreach (var start in Settings.GetGetAllStartObjects())
+            foreach (var start in _startObjectsManager.GetGetAllStartObjects())
             {
                 if (!await start.Run())
                 {
@@ -46,15 +53,58 @@ namespace StartLauncher
             }
             else
             {
-                System.Environment.Exit(0);
+                Application.Current.Shutdown();
             }
         }
 
         private void ModLaunchApps_Click(object sender, RoutedEventArgs e)
         {
-            var settingsWindow = new StartupObjectsWindow(Settings);
+            var settingsWindow = new StartupObjectsWindow(Settings, _startObjectsManager);
             settingsWindow.Show();
             Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+#if DEBUG
+            PersistentSettings.StartupLaunch.Disable();
+#endif
+            App.CurrentApp.AutoShutdownCancelled = true;
+        }
+
+        private void ShutdownTimerSet_Click(object sender, RoutedEventArgs e)
+        {
+            App.CurrentApp.AutoShutdownCancelled = true;
+            var shutdownTimerWindor = new ShutdownTimerPicker(Settings);
+            shutdownTimerWindor.ShowDialog();
+            if (shutdownTimerWindor.Confirmed)
+            {
+                Settings.ShutdownTimerSeconds = shutdownTimerWindor.ShutdownTimerSeconds;
+            }
+        }
+
+        private void SetLaunchProfiles_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new PersistentSettings.LaunchProfiles.LaunchProfilesEditor(Settings);
+            settingsWindow.Show();
+            Close();
+        }
+
+        private void ProfileDown_Click(object sender, RoutedEventArgs e)
+        {
+            _launchProfileManager.PrevProfile(_startObjectsManager);
+            SetProfileName();
+        }
+
+        private void ProfileUp_Click(object sender, RoutedEventArgs e)
+        {
+            _launchProfileManager.NextProfile(_startObjectsManager);
+            SetProfileName();
+        }
+
+        private void SetProfileName()
+        {
+            ProfileName.Text = _launchProfileManager.FindById(_startObjectsManager.CurrentProfileId).Name;
         }
     }
 }
