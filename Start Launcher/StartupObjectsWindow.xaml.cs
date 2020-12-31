@@ -17,10 +17,10 @@ namespace StartLauncher
         {
             InitializeComponent();
         }
-        public StartupObjectsWindow(PersistentSettings.Settings settings)
+        public StartupObjectsWindow(PersistentSettings.Settings settings, PersistentSettings.StartObjects.StartObjectsManager startObjectsManager)
         {
             Settings = settings;
-            _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(settings);
+            _startObjectsManager = startObjectsManager;
             InitializeComponent();
         }
 
@@ -208,7 +208,7 @@ namespace StartLauncher
 
         private void AddStoreApp_Click(object sender, RoutedEventArgs e)
         {
-            var storeAppPicker = new LaunchObjectsPickers.StoreAppsPicker(Settings);
+            var storeAppPicker = new LaunchObjectsPickers.StoreAppsPicker(_startObjectsManager);
             storeAppPicker.ShowDialog();
             if (storeAppPicker.StartApplication != null)
             {

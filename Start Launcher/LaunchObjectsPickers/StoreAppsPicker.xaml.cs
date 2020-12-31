@@ -11,9 +11,9 @@ namespace StartLauncher.LaunchObjectsPickers
     {
         public PersistentSettings.StoreAppsManager _appsManager { get; }
         public PersistentSettings.StartObjects.StartApplication StartApplication { get; private set; }
-        public StoreAppsPicker(PersistentSettings.Settings settings)
+        public StoreAppsPicker(PersistentSettings.StartObjects.StartObjectsManager startObjectsManager)
         {
-            _appsManager = new PersistentSettings.StoreAppsManager(settings.startApps.Select(s => s.Location));
+            _appsManager = new PersistentSettings.StoreAppsManager(startObjectsManager.GetGetAllStartObjects().Where(s => s is PersistentSettings.StartObjects.StartApplication).Select(s => s.Location));
             InitializeComponent();
         }
 

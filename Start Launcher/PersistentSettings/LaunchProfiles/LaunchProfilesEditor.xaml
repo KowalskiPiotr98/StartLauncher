@@ -1,0 +1,23 @@
+﻿<Window x:Name="window" x:Class="StartLauncher.PersistentSettings.LaunchProfiles.LaunchProfilesEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StartLauncher.PersistentSettings.LaunchProfiles"
+        mc:Ignorable="d"
+        Title="Launch Profiles Editor" Height="450" Width="800"
+        Closing="window_Closing">
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Add new:" Margin="5"/>
+            <TextBox Width="200" VerticalAlignment="Center" x:Name="NewNameText" MaxLength="100" Margin="5"/>
+            <Button x:Name="AddNew" Margin="5" Content="Add" Click="AddNew_Click" VerticalAlignment="Center"/>
+        </StackPanel>
+        <CheckBox x:Name="DeleteMode" Content="Delete mode" IsChecked="False" Margin="5" Checked="DeleteMode_Checked" Unchecked="DeleteMode_Unchecked"/>
+        <Label Content="Select to change default profile" Margin="5"/>
+        <ScrollViewer VerticalScrollBarVisibility="Visible">
+            <ListView x:Name="ProfilesListView" Margin="5" SelectionMode="Single" ItemsSource="{Binding ElementName=window, Path=LaunchProfiles}" SelectionChanged="ProfilesListView_SelectionChanged" MouseLeftButtonUp="ProfilesListView_MouseLeftButtonUp">
+            </ListView>
+        </ScrollViewer>
+    </StackPanel>
+</Window>

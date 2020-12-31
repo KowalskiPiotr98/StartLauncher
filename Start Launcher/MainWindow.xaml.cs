@@ -12,13 +12,16 @@ namespace StartLauncher
         public PersistentSettings.Settings Settings { get; private set; }
 
         private readonly PersistentSettings.StartObjects.StartObjectsManager _startObjectsManager;
+        private readonly PersistentSettings.LaunchProfiles.LaunchProfileManager _launchProfileManager;
         public MainWindow()
         {
             PersistentSettings.Settings.InitialiseFile();
             Settings = PersistentSettings.Settings.ReadFromFile();
             App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds);
             _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(Settings);
+            _launchProfileManager = new PersistentSettings.LaunchProfiles.LaunchProfileManager(Settings);
             InitializeComponent();
+            SetProfileName();
             LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
         }
 
@@ -56,7 +59,7 @@ namespace StartLauncher
 
         private void ModLaunchApps_Click(object sender, RoutedEventArgs e)
         {
-            var settingsWindow = new StartupObjectsWindow(Settings);
+            var settingsWindow = new StartupObjectsWindow(Settings, _startObjectsManager);
             settingsWindow.Show();
             Close();
         }
@@ -78,6 +81,30 @@ namespace StartLauncher
             {
                 Settings.ShutdownTimerSeconds = shutdownTimerWindor.ShutdownTimerSeconds;
             }
+        }
+
+        private void SetLaunchProfiles_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new PersistentSettings.LaunchProfiles.LaunchProfilesEditor(Settings);
+            settingsWindow.Show();
+            Close();
+        }
+
+        private void ProfileDown_Click(object sender, RoutedEventArgs e)
+        {
+            _launchProfileManager.PrevProfile(_startObjectsManager);
+            SetProfileName();
+        }
+
+        private void ProfileUp_Click(object sender, RoutedEventArgs e)
+        {
+            _launchProfileManager.NextProfile(_startObjectsManager);
+            SetProfileName();
+        }
+
+        private void SetProfileName()
+        {
+            ProfileName.Text = _launchProfileManager.FindById(_startObjectsManager.CurrentProfileId).Name;
         }
     }
 }

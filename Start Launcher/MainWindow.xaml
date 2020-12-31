@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StartLauncher"
         mc:Ignorable="d"
+        x:Name="window"
         Title="Start Launcher" Height="200" Width="200"
         MinHeight="200" MinWidth="200" MaxHeight="200" MaxWidth="200"
         ResizeMode="NoResize"
@@ -13,15 +14,27 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Menu x:Name="TopMenu">
             <MenuItem Margin="5,0,5,0" Header="Options">
                 <MenuItem Header="Launch on startup" Name="LaunchOnStartup" IsCheckable="True" IsChecked="True" Click="LaunchOnStartup_Click"/>
                 <Separator/>
                 <MenuItem Header="Modify launch apps" Name="ModLaunchApps" Click="ModLaunchApps_Click"/>
+                <MenuItem Header="Set launch profiles" Name="SetLaunchProfiles" Click="SetLaunchProfiles_Click"/>
                 <MenuItem Header="Set shutdown timer" x:Name="ShutdownTimerSet" Click="ShutdownTimerSet_Click" />
             </MenuItem>
         </Menu>
         <Button Grid.Row="1" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="Launch" Name="LaunchButton" Click="LaunchButton_Click"/>
+        <Grid Grid.Row="2" Margin="5,0,5,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="ProfileDown" FontFamily="Marlett" Content="3" FontSize="20" Click="ProfileDown_Click"/>
+            <TextBlock x:Name="ProfileName" TextWrapping="Wrap" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TextAlignment="Center"/>
+            <Button x:Name="ProfileUp" FontFamily="Marlett" Content="4" FontSize="20" Grid.Column="2" Click="ProfileUp_Click"/>
+        </Grid>
     </Grid>
 </Window>
