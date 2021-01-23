@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_E184D435DA044992BBD2CDB6FB08585A"
+        "MsmKey" = "8:_7BCC845DF07E4C62A730143B6380FDDF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -44,6 +44,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.3.1.x64"
+                    {
+                    "Name" = "8:.NET Desktop Runtime 3.1.10 (x64)"
+                    "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.3.1.x64"
+                    }
+                }
             }
         }
         "Release"
@@ -164,15 +172,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Start Launcher"
-        "ProductCode" = "8:{51853CDA-0594-4F06-930D-A8010C738BA3}"
-        "PackageCode" = "8:{78284D26-BA33-4E54-8BB5-7EA6935CF65C}"
+        "ProductCode" = "8:{FC2A514C-3C5F-447C-BB6C-1832328E9FD4}"
+        "PackageCode" = "8:{1CE5160A-FE61-4759-8269-437A2182B595}"
         "UpgradeCode" = "8:{B63C1354-07EA-4858-8094-8FF7DE3F85FF}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.2.0"
+        "ProductVersion" = "8:0.3.0"
         "Manufacturer" = "8:Start Launcher"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -293,7 +301,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_E184D435DA044992BBD2CDB6FB08585A"
+            "Target" = "8:"
             "Folder" = "8:_897BDD74491546A8B22B78E5A402BC13"
             "WorkingFolder" = "8:_F8873E7C862B4022AA400F4D0D82556F"
             "Icon" = "8:"
@@ -698,7 +706,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E184D435DA044992BBD2CDB6FB08585A"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_7BCC845DF07E4C62A730143B6380FDDF"
             {
             "SourcePath" = "8:..\\Start Launcher\\obj\\Release\\netcoreapp3.1\\apphost.exe"
             "TargetName" = "8:"
@@ -718,7 +726,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
+            "OutputConfiguration" = "8:Release|Any CPU"
             "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{74E791F4-35E1-4656-AB01-DE21C6B7441B}"
             "ShowKeyOutput" = "11:TRUE"
