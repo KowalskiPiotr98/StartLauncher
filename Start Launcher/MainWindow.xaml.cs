@@ -117,5 +117,13 @@ namespace StartLauncher
         {
             ProfileName.Text = _launchProfileManager.FindById(_startObjectsManager.CurrentProfileId).Name;
         }
+
+        private void window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Escape)
+            {
+                Application.Current.Shutdown();
+            }
+        }
     }
 }
