@@ -125,5 +125,18 @@ namespace StartLauncher
                 Application.Current.Shutdown();
             }
         }
+
+        private void FactorySettings_Click(object sender, RoutedEventArgs e)
+        {
+            var response = MessageBox.Show("This will delete all of your settings and restore the original state of the application. Do you want to continue?", "Restore factory settings", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (response == MessageBoxResult.Yes)
+            {
+                PersistentSettings.Settings.RestoreDefaultSettings();
+                //Force window reload
+                var newWindow = new MainWindow();
+                Close();
+                newWindow.Show();
+            }
+        }
     }
 }
