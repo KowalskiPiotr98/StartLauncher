@@ -25,7 +25,6 @@ namespace StartLauncher
                 MessageBox.Show("Settings file was corrupted and will now be reverted to default.", "Start Launcher loading error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 Settings = PersistentSettings.Settings.RestoreDefaultSettings();
             }
-            App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds);
             _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(Settings);
             _launchProfileManager = new PersistentSettings.LaunchProfiles.LaunchProfileManager(Settings);
             InitializeComponent();
