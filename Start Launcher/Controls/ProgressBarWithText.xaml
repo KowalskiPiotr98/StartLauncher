@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="StartLauncher.Controls.ProgressBarWithText"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StartLauncher.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="200">
+    <Grid>
+        <ProgressBar x:Name="Bar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Minimum="0" Maximum="0" Value="0"/>
+        <TextBlock x:Name="Text" Text="Press to cancel shutdown" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    </Grid>
+</UserControl>
