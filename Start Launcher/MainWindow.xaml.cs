@@ -16,7 +16,15 @@ namespace StartLauncher
         public MainWindow()
         {
             PersistentSettings.Settings.InitialiseFile();
-            Settings = PersistentSettings.Settings.ReadFromFile();
+            try
+            {
+                Settings = PersistentSettings.Settings.ReadFromFile();
+            }
+            catch (System.IO.FileFormatException)
+            {
+                MessageBox.Show("Settings file was corrupted and will now be reverted to default.", "Start Launcher loading error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Settings = PersistentSettings.Settings.RestoreDefaultSettings();
+            }
             App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds);
             _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(Settings);
             _launchProfileManager = new PersistentSettings.LaunchProfiles.LaunchProfileManager(Settings);
@@ -33,6 +41,7 @@ namespace StartLauncher
 
         private async void LaunchButton_Click(object sender, RoutedEventArgs e)
         {
+            App.CurrentApp.CancelShutdownTimer();
             IsEnabled = false;
             Hide();
             var failed = false;
@@ -69,12 +78,12 @@ namespace StartLauncher
 #if DEBUG
             PersistentSettings.StartupLaunch.Disable();
 #endif
-            App.CurrentApp.AutoShutdownCancelled = true;
+            App.CurrentApp.CancelShutdownTimer();
         }
 
         private void ShutdownTimerSet_Click(object sender, RoutedEventArgs e)
         {
-            App.CurrentApp.AutoShutdownCancelled = true;
+            App.CurrentApp.CancelShutdownTimer();
             var shutdownTimerWindor = new ShutdownTimerPicker(Settings);
             shutdownTimerWindor.ShowDialog();
             if (shutdownTimerWindor.Confirmed)
@@ -92,12 +101,14 @@ namespace StartLauncher
 
         private void ProfileDown_Click(object sender, RoutedEventArgs e)
         {
+            App.CurrentApp.CancelShutdownTimer();
             _launchProfileManager.PrevProfile(_startObjectsManager);
             SetProfileName();
         }
 
         private void ProfileUp_Click(object sender, RoutedEventArgs e)
         {
+            App.CurrentApp.CancelShutdownTimer();
             _launchProfileManager.NextProfile(_startObjectsManager);
             SetProfileName();
         }

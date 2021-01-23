@@ -7,10 +7,16 @@ namespace StartLauncher
     /// </summary>
     public partial class App : Application
     {
-        public bool AutoShutdownCancelled { get; set; }
+
+        public bool AutoShutdownCancelled { get; private set; }
         public static App CurrentApp { get; private set; }
 
         private System.Windows.Threading.DispatcherTimer timer;
+
+        public void CancelShutdownTimer()
+        {
+            AutoShutdownCancelled = true;
+        }
 
         public void SetTimer(int? secondsToShutdown)
         {
