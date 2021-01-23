@@ -17,11 +17,11 @@ namespace StartLauncher
         {
             PersistentSettings.Settings.InitialiseFile();
             Settings = PersistentSettings.Settings.ReadFromFile();
-            App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds);
             _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(Settings);
             _launchProfileManager = new PersistentSettings.LaunchProfiles.LaunchProfileManager(Settings);
             InitializeComponent();
             SetProfileName();
+            App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds, ShutdownProgressBar);
             LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
         }
 
@@ -108,6 +108,11 @@ namespace StartLauncher
         private void SetProfileName()
         {
             ProfileName.Text = _launchProfileManager.FindById(_startObjectsManager.CurrentProfileId).Name;
+        }
+
+        private void ShutdownCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.CurrentApp.CancelShutdownTimer();
         }
     }
 }
