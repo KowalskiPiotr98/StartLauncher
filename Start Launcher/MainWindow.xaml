@@ -9,6 +9,7 @@
         Title="Start Launcher" Height="200" Width="200"
         MinHeight="200" MinWidth="200" MaxHeight="200" MaxWidth="200"
         ResizeMode="NoResize"
+        KeyDown="window_KeyDown"
         Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
