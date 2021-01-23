@@ -33,6 +33,7 @@ namespace StartLauncher
 
         private async void LaunchButton_Click(object sender, RoutedEventArgs e)
         {
+            App.CurrentApp.CancelShutdownTimer();
             IsEnabled = false;
             Hide();
             var failed = false;
@@ -69,12 +70,12 @@ namespace StartLauncher
 #if DEBUG
             PersistentSettings.StartupLaunch.Disable();
 #endif
-            App.CurrentApp.AutoShutdownCancelled = true;
+            App.CurrentApp.CancelShutdownTimer();
         }
 
         private void ShutdownTimerSet_Click(object sender, RoutedEventArgs e)
         {
-            App.CurrentApp.AutoShutdownCancelled = true;
+            App.CurrentApp.CancelShutdownTimer();
             var shutdownTimerWindor = new ShutdownTimerPicker(Settings);
             shutdownTimerWindor.ShowDialog();
             if (shutdownTimerWindor.Confirmed)
@@ -92,12 +93,14 @@ namespace StartLauncher
 
         private void ProfileDown_Click(object sender, RoutedEventArgs e)
         {
+            App.CurrentApp.CancelShutdownTimer();
             _launchProfileManager.PrevProfile(_startObjectsManager);
             SetProfileName();
         }
 
         private void ProfileUp_Click(object sender, RoutedEventArgs e)
         {
+            App.CurrentApp.CancelShutdownTimer();
             _launchProfileManager.NextProfile(_startObjectsManager);
             SetProfileName();
         }
