@@ -16,7 +16,16 @@ namespace StartLauncher
         public MainWindow()
         {
             PersistentSettings.Settings.InitialiseFile();
-            Settings = PersistentSettings.Settings.ReadFromFile();
+            try
+            {
+                Settings = PersistentSettings.Settings.ReadFromFile();
+            }
+            catch (System.IO.FileFormatException)
+            {
+                MessageBox.Show("Settings file was corrupted and will now be reverted to default.", "Start Launcher loading error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Settings = PersistentSettings.Settings.RestoreDefaultSettings();
+            }
+            App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds);
             _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(Settings);
             _launchProfileManager = new PersistentSettings.LaunchProfiles.LaunchProfileManager(Settings);
             InitializeComponent();
@@ -108,6 +117,27 @@ namespace StartLauncher
         private void SetProfileName()
         {
             ProfileName.Text = _launchProfileManager.FindById(_startObjectsManager.CurrentProfileId).Name;
+        }
+
+        private void window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Escape)
+            {
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void FactorySettings_Click(object sender, RoutedEventArgs e)
+        {
+            var response = MessageBox.Show("This will delete all of your settings and restore the original state of the application. Do you want to continue?", "Restore factory settings", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (response == MessageBoxResult.Yes)
+            {
+                PersistentSettings.Settings.RestoreDefaultSettings();
+                //Force window reload
+                var newWindow = new MainWindow();
+                Close();
+                newWindow.Show();
+            }
         }
 
         private void ShutdownCancelButton_Click(object sender, RoutedEventArgs e)
