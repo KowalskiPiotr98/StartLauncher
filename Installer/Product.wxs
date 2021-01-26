@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="MinimalTester" Language="1033" Version="0.3.0.0" Manufacturer="Piotr Kowalski" UpgradeCode="c99e3f3b-82bd-4b3e-962d-72a49b231f1c">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <!--CHANGE #2: Add the following elements to link one of the default WiX GUI sequences and show the specified license agreement. The RTF file must be created and placed next to your WiX source file -->
+    <UIRef Id="WixUI_Mondo" />
+    <!--<WixVariable Id="WixUILicenseRtf" Value="LicenseAgreement.rtf" />-->
+
+    <Feature Id="ProductFeature" Title="MinimalTester" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="MinimalTester" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+
+      <Component>
+        <File Source="..\Start Launcher\bin\Release\netcoreapp3.1\Start Launcher.exe" />
+      </Component>
+
+    </ComponentGroup>
+  </Fragment>
+</Wix>
