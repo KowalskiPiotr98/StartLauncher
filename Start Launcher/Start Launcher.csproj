@@ -13,6 +13,8 @@
     <RepositoryType>git</RepositoryType>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <CodeAnalysisRuleSet>Start Launcher.ruleset</CodeAnalysisRuleSet>
+    <PackageIcon>Assets\Icon.png</PackageIcon>
+    <ApplicationIcon>Assets\Icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,6 +27,22 @@
 
   <ItemGroup>
     <AdditionalFiles Include="..\.sonarlint\kowalskipiotr98_startlauncher\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\Icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
