@@ -13,6 +13,9 @@ namespace StartLauncher
 
         private readonly PersistentSettings.StartObjects.StartObjectsManager _startObjectsManager;
         private readonly PersistentSettings.LaunchProfiles.LaunchProfileManager _launchProfileManager;
+
+        private static bool firstLaunch = true;
+
         public MainWindow()
         {
             PersistentSettings.Settings.InitialiseFile();
@@ -142,6 +145,32 @@ namespace StartLauncher
         private void ShutdownCancelButton_Click(object sender, RoutedEventArgs e)
         {
             App.CurrentApp.CancelShutdownTimer();
+        }
+
+        private void UpdatesSettings_Click(object sender, RoutedEventArgs e)
+        {
+            App.CurrentApp.CancelShutdownTimer();
+            var dialog = new Utilities.Updater.UpdaterOptionsWindow(Settings);
+            _ = dialog.ShowDialog();
+        }
+
+        private async void window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (firstLaunch)
+            {
+#pragma warning disable S2696 // Instance members should not write to "static" fields
+                firstLaunch = false;
+#pragma warning restore S2696 // Instance members should not write to "static" fields
+                if (Settings.AutoUpdateCheck)
+                {
+                    App.CurrentApp.PauseShutdownTimer(true);
+                    if (await Utilities.Updater.UpdateChecker.CheckAndInstallUpdatesAsync())
+                    {
+                        App.CurrentApp.Shutdown();
+                    }
+                    App.CurrentApp.PauseShutdownTimer(false);
+                }
+            }
         }
     }
 }

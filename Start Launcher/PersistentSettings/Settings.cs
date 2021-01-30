@@ -30,6 +30,7 @@ namespace StartLauncher.PersistentSettings
         public int? ShutdownTimerSeconds { get => shutdownTimerSeconds; set { shutdownTimerSeconds = value; SaveToFile(); } }
         public List<LaunchProfiles.LaunchProfile> LaunchProfiles { get; set; }
         public string DefaultLaunchProfile { get; set; }
+        public bool AutoUpdateCheck { get; set; }
         /// <summary>
         /// This property is only for JSON serialization and should not be used to get or set the actual list
         /// </summary>
@@ -143,7 +144,8 @@ namespace StartLauncher.PersistentSettings
             {
                 launchOnStartup = true,
                 LaunchProfiles = new List<LaunchProfiles.LaunchProfile> { defaultLaunchProfile },
-                DefaultLaunchProfile = defaultLaunchProfile.Id
+                DefaultLaunchProfile = defaultLaunchProfile.Id,
+                AutoUpdateCheck = true
             };
             defaultSettings.SkipSavingToFile = false;
             return defaultSettings;
