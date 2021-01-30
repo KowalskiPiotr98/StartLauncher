@@ -51,7 +51,7 @@ namespace StartLauncher.Utilities.Updater
             return updateAvailable.Value;
         }
 
-        private async Task<GitHubReleaseModel> GetLatestReleaseAsync()
+        private static async Task<GitHubReleaseModel> GetLatestReleaseAsync()
         {
             using var client = new GitHubClient();
             string response;
