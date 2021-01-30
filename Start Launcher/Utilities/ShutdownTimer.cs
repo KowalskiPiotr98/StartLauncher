@@ -34,6 +34,18 @@ namespace StartLauncher.Utilities
             _timer.Stop();
         }
 
+        public void SetRunState(bool run)
+        {
+            if (run && !_timer.IsEnabled)
+            {
+                _timer.Start();
+            }
+            if (!run && _timer.IsEnabled)
+            {
+                _timer.Stop();
+            }
+        }
+
         private void Timer_Tick(object sender, System.EventArgs e)
         {
             timerSecondsRemaining--;

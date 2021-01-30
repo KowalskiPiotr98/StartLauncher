@@ -10,7 +10,7 @@
         MinHeight="200" MinWidth="200" MaxHeight="200" MaxWidth="200"
         ResizeMode="NoResize"
         KeyDown="window_KeyDown"
-        Closing="Window_Closing">
+        Closing="Window_Closing" Loaded="window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -26,6 +26,7 @@
                 <MenuItem Header="Set launch profiles" Name="SetLaunchProfiles" Click="SetLaunchProfiles_Click"/>
                 <MenuItem Header="Set shutdown timer" x:Name="ShutdownTimerSet" Click="ShutdownTimerSet_Click" />
                 <Separator/>
+                <MenuItem Header="Updates" x:Name="UpdatesSettings" Click="UpdatesSettings_Click"/>
                 <MenuItem Header="Restore factory settings" x:Name="FactorySettings" Click="FactorySettings_Click"/>
             </MenuItem>
         </Menu>

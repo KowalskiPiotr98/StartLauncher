@@ -8,6 +8,11 @@ namespace StartLauncher
     /// </summary>
     public partial class App : Application
     {
+        public static string Version => $"v{Major}.{Minor}.{Patch}";
+        public static int Major => 0;
+        public static int Minor => 3;
+        public static int Patch => 0;
+
         public static App CurrentApp { get; private set; }
 
         private ShutdownTimer shutdownTimer;
@@ -15,6 +20,11 @@ namespace StartLauncher
         public void CancelShutdownTimer()
         {
             shutdownTimer?.Cancel();
+        }
+
+        public void PauseShutdownTimer(bool pause = true)
+        {
+            shutdownTimer?.SetRunState(!pause);
         }
 
         public void SetTimer(int? secondsToShutdown, Controls.ProgressBarWithText progressBar)
