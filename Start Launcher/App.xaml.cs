@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using StartLauncher.Utilities;
+using System.Windows;
 
 namespace StartLauncher
 {
@@ -7,34 +8,33 @@ namespace StartLauncher
     /// </summary>
     public partial class App : Application
     {
-        public bool AutoShutdownCancelled { get; set; }
+        public static string Version => $"v{Major}.{Minor}.{Patch}";
+        public static int Major => 0;
+        public static int Minor => 3;
+        public static int Patch => 0;
+
         public static App CurrentApp { get; private set; }
 
-        private System.Windows.Threading.DispatcherTimer timer;
+        private ShutdownTimer shutdownTimer;
 
-        public void SetTimer(int? secondsToShutdown)
+        public void CancelShutdownTimer()
         {
-            if (secondsToShutdown.HasValue && timer is null)
-            {
-                timer = new System.Windows.Threading.DispatcherTimer
-                {
-                    Interval = System.TimeSpan.FromSeconds(secondsToShutdown.Value)
-                };
-                timer.Tick += Timer_Tick;
-                timer.Start();
-            }
-            else
-            {
-                timer?.Stop();
-            }
+            shutdownTimer?.Cancel();
         }
 
-        private void Timer_Tick(object sender, System.EventArgs e)
+        public void PauseShutdownTimer(bool pause = true)
         {
-            if (!AutoShutdownCancelled)
+            shutdownTimer?.SetRunState(!pause);
+        }
+
+        public void SetTimer(int? secondsToShutdown, Controls.ProgressBarWithText progressBar)
+        {
+            if (!secondsToShutdown.HasValue)
             {
-                Shutdown();
+                shutdownTimer?.Cancel();
+                return;
             }
+            shutdownTimer = new ShutdownTimer(secondsToShutdown.Value, progressBar, this);
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

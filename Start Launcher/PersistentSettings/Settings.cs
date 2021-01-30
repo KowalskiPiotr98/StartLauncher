@@ -30,6 +30,7 @@ namespace StartLauncher.PersistentSettings
         public int? ShutdownTimerSeconds { get => shutdownTimerSeconds; set { shutdownTimerSeconds = value; SaveToFile(); } }
         public List<LaunchProfiles.LaunchProfile> LaunchProfiles { get; set; }
         public string DefaultLaunchProfile { get; set; }
+        public bool AutoUpdateCheck { get; set; }
         /// <summary>
         /// This property is only for JSON serialization and should not be used to get or set the actual list
         /// </summary>
@@ -83,8 +84,9 @@ namespace StartLauncher.PersistentSettings
                     }
                     catch (System.Exception)
                     {
-                        startObjectsManager.RemoveStartObject(appLauncher.LaunchOrder);//TODO: inform a user instead
+                        startObjectsManager.RemoveStartObject(appLauncher.LaunchOrder);
                         settings.SaveToFile();
+                        System.Windows.MessageBox.Show($"Application {appLauncher.UserGivenName} couldn't be loaded and was deleted", "StartLauncher error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                     }
                 }
                 var launchProfileManager = new LaunchProfiles.LaunchProfileManager(settings);
@@ -112,7 +114,7 @@ namespace StartLauncher.PersistentSettings
         /// <summary>
         /// Ensused settings file and directory are created
         /// </summary>
-        public static void InitialiseFile()
+        public static Settings InitialiseFile()
         {
             if (!Directory.Exists(PERSISTENT_FOLDER_PATH))
             {
@@ -122,14 +124,28 @@ namespace StartLauncher.PersistentSettings
             {
                 var defaultSettings = GetDefaultSettings();
                 defaultSettings.SaveToFile();
+                return defaultSettings;
             }
+            return null;
+        }
+
+        public static Settings RestoreDefaultSettings()
+        {
+            File.Delete(SETTING_FILE_PATH);
+            var defaults = GetDefaultSettings();
+            defaults.SaveToFile();
+            return defaults;
         }
 
         public static Settings GetDefaultSettings()
         {
+            var defaultLaunchProfile = new LaunchProfiles.LaunchProfile("Default");
             var defaultSettings = new Settings
             {
-                launchOnStartup = true
+                launchOnStartup = true,
+                LaunchProfiles = new List<LaunchProfiles.LaunchProfile> { defaultLaunchProfile },
+                DefaultLaunchProfile = defaultLaunchProfile.Id,
+                AutoUpdateCheck = true
             };
             defaultSettings.SkipSavingToFile = false;
             return defaultSettings;

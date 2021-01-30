@@ -13,15 +13,26 @@ namespace StartLauncher
 
         private readonly PersistentSettings.StartObjects.StartObjectsManager _startObjectsManager;
         private readonly PersistentSettings.LaunchProfiles.LaunchProfileManager _launchProfileManager;
+
+        private static bool firstLaunch = true;
+
         public MainWindow()
         {
             PersistentSettings.Settings.InitialiseFile();
-            Settings = PersistentSettings.Settings.ReadFromFile();
-            App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds);
+            try
+            {
+                Settings = PersistentSettings.Settings.ReadFromFile();
+            }
+            catch (System.IO.FileFormatException)
+            {
+                MessageBox.Show("Settings file was corrupted and will now be reverted to default.", "Start Launcher loading error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Settings = PersistentSettings.Settings.RestoreDefaultSettings();
+            }
             _startObjectsManager = new PersistentSettings.StartObjects.StartObjectsManager(Settings);
             _launchProfileManager = new PersistentSettings.LaunchProfiles.LaunchProfileManager(Settings);
             InitializeComponent();
             SetProfileName();
+            App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds, ShutdownProgressBar);
             LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
         }
 
@@ -33,6 +44,7 @@ namespace StartLauncher
 
         private async void LaunchButton_Click(object sender, RoutedEventArgs e)
         {
+            App.CurrentApp.CancelShutdownTimer();
             IsEnabled = false;
             Hide();
             var failed = false;
@@ -69,12 +81,12 @@ namespace StartLauncher
 #if DEBUG
             PersistentSettings.StartupLaunch.Disable();
 #endif
-            App.CurrentApp.AutoShutdownCancelled = true;
+            App.CurrentApp.CancelShutdownTimer();
         }
 
         private void ShutdownTimerSet_Click(object sender, RoutedEventArgs e)
         {
-            App.CurrentApp.AutoShutdownCancelled = true;
+            App.CurrentApp.CancelShutdownTimer();
             var shutdownTimerWindor = new ShutdownTimerPicker(Settings);
             shutdownTimerWindor.ShowDialog();
             if (shutdownTimerWindor.Confirmed)
@@ -92,12 +104,14 @@ namespace StartLauncher
 
         private void ProfileDown_Click(object sender, RoutedEventArgs e)
         {
+            App.CurrentApp.CancelShutdownTimer();
             _launchProfileManager.PrevProfile(_startObjectsManager);
             SetProfileName();
         }
 
         private void ProfileUp_Click(object sender, RoutedEventArgs e)
         {
+            App.CurrentApp.CancelShutdownTimer();
             _launchProfileManager.NextProfile(_startObjectsManager);
             SetProfileName();
         }
@@ -105,6 +119,58 @@ namespace StartLauncher
         private void SetProfileName()
         {
             ProfileName.Text = _launchProfileManager.FindById(_startObjectsManager.CurrentProfileId).Name;
+        }
+
+        private void window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Escape)
+            {
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void FactorySettings_Click(object sender, RoutedEventArgs e)
+        {
+            var response = MessageBox.Show("This will delete all of your settings and restore the original state of the application. Do you want to continue?", "Restore factory settings", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (response == MessageBoxResult.Yes)
+            {
+                PersistentSettings.Settings.RestoreDefaultSettings();
+                //Force window reload
+                var newWindow = new MainWindow();
+                Close();
+                newWindow.Show();
+            }
+        }
+
+        private void ShutdownCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.CurrentApp.CancelShutdownTimer();
+        }
+
+        private void UpdatesSettings_Click(object sender, RoutedEventArgs e)
+        {
+            App.CurrentApp.CancelShutdownTimer();
+            var dialog = new Utilities.Updater.UpdaterOptionsWindow(Settings);
+            _ = dialog.ShowDialog();
+        }
+
+        private async void window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (firstLaunch)
+            {
+#pragma warning disable S2696 // Instance members should not write to "static" fields
+                firstLaunch = false;
+#pragma warning restore S2696 // Instance members should not write to "static" fields
+                if (Settings.AutoUpdateCheck)
+                {
+                    App.CurrentApp.PauseShutdownTimer(true);
+                    if (await Utilities.Updater.UpdateChecker.CheckAndInstallUpdatesAsync())
+                    {
+                        App.CurrentApp.Shutdown();
+                    }
+                    App.CurrentApp.PauseShutdownTimer(false);
+                }
+            }
         }
     }
 }
