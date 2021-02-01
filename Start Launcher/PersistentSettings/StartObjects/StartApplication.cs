@@ -27,7 +27,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
             {
                 throw new System.IO.FileNotFoundException("Application file not found", Location);
             }
-            if (!Location.EndsWith(".exe"))
+            if (!Location.EndsWith(".exe", System.StringComparison.CurrentCultureIgnoreCase))
             {
                 throw new System.IO.FileFormatException("Only executable files are allowed");
             }

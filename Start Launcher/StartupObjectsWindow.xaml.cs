@@ -185,6 +185,14 @@ namespace StartLauncher
                 {
                     MessageBox.Show($"Application already exists on the list", "Unable", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
+                catch (System.IO.FileFormatException)
+                {
+                    MessageBox.Show($"Only .exe files are allowed", "Unable", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                catch (System.IO.FileNotFoundException)
+                {
+                    MessageBox.Show($"Selected application was not found", "Unable", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
         }
 
