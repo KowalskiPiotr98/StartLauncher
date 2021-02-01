@@ -31,6 +31,7 @@ namespace StartLauncher.Utilities.Updater
             {
                 throw new UpdateException("Invalid release format");
             }
+            releaseVersionNumbers[2] = releaseVersionNumbers[2].Split('-')[0];
             if (!int.TryParse(releaseVersionNumbers[0], out int major) || !int.TryParse(releaseVersionNumbers[1], out int minor) || !int.TryParse(releaseVersionNumbers[2], out int patch))
             {
                 throw new UpdateException("Invalid release format");
