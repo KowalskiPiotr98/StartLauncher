@@ -10,13 +10,26 @@ namespace StartLauncher
     {
         public int? ShutdownTimerSeconds { get; set; }
         public bool Confirmed { get; set; }
+        public ShutdownTimerAction Action { get; set; }
         public ShutdownTimerPicker(PersistentSettings.Settings settings)
         {
             ShutdownTimerSeconds = settings.ShutdownTimerSeconds;
+            Action = settings.ShutdownTimerAction;
             InitializeComponent();
             Enabled.IsChecked = ShutdownTimerSeconds.HasValue;
             SecondsToShutdownText.Text = ShutdownTimerSeconds.HasValue ? ShutdownTimerSeconds.Value.ToString() : "";
             SecondsToShutdownText.IsEnabled = ShutdownTimerSeconds.HasValue;
+            switch (Action)
+            {
+                case ShutdownTimerAction.Quit:
+                    TimerQuit.IsChecked = true;
+                    break;
+                case ShutdownTimerAction.LaunchAndQuit:
+                    TimerLaunch.IsChecked = true;
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void Enabled_Checked(object sender, RoutedEventArgs e)
@@ -42,6 +55,22 @@ namespace StartLauncher
             }
             Confirmed = true;
             Close();
+        }
+
+        public enum ShutdownTimerAction
+        {
+            Quit,
+            LaunchAndQuit
+        }
+
+        private void TimerQuit_Checked(object sender, RoutedEventArgs e)
+        {
+            Action = ShutdownTimerAction.Quit;
+        }
+
+        private void TimerLaunch_Checked(object sender, RoutedEventArgs e)
+        {
+            Action = ShutdownTimerAction.LaunchAndQuit;
         }
     }
 }
