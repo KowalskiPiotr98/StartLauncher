@@ -32,7 +32,7 @@ namespace StartLauncher
             _launchProfileManager = new PersistentSettings.LaunchProfiles.LaunchProfileManager(Settings);
             InitializeComponent();
             SetProfileName();
-            App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds, ShutdownProgressBar);
+            App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds, ShutdownProgressBar, Settings.ShutdownTimerAction, _startObjectsManager);
             LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
         }
 
@@ -47,16 +47,7 @@ namespace StartLauncher
             App.CurrentApp.CancelShutdownTimer();
             IsEnabled = false;
             Hide();
-            var failed = false;
-            var failedNames = new StringBuilder();
-            foreach (var start in _startObjectsManager.GetGetAllStartObjects())
-            {
-                if (!await start.Run())
-                {
-                    failed = true;
-                    failedNames.AppendLine(start.UserGivenName);
-                }
-            }
+            var (failed, failedNames) = await _startObjectsManager.LaunchAllInCurrentProfile();
             if (failed)
             {
                 MessageBox.Show($"Some programs failed to launch:\n{failedNames}", "Launch failed", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -87,11 +78,12 @@ namespace StartLauncher
         private void ShutdownTimerSet_Click(object sender, RoutedEventArgs e)
         {
             App.CurrentApp.CancelShutdownTimer();
-            var shutdownTimerWindor = new ShutdownTimerPicker(Settings);
-            shutdownTimerWindor.ShowDialog();
-            if (shutdownTimerWindor.Confirmed)
+            var shutdownTimerWindow = new ShutdownTimerPicker(Settings);
+            shutdownTimerWindow.ShowDialog();
+            if (shutdownTimerWindow.Confirmed)
             {
-                Settings.ShutdownTimerSeconds = shutdownTimerWindor.ShutdownTimerSeconds;
+                Settings.ShutdownTimerSeconds = shutdownTimerWindow.ShutdownTimerSeconds;
+                Settings.ShutdownTimerAction = shutdownTimerWindow.Action;
             }
         }
 

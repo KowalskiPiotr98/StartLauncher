@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace StartLauncher.PersistentSettings.StartObjects
 {
@@ -101,6 +103,21 @@ namespace StartLauncher.PersistentSettings.StartObjects
         public void SwitchToProfile(LaunchProfiles.LaunchProfile launchProfile)
         {
             SwitchToProfile(launchProfile.Id);
+        }
+
+        public async Task<(bool failed, string failedNames)> LaunchAllInCurrentProfile()
+        {
+            var failedNames = new StringBuilder();
+            bool failed = false;
+            foreach (var start in GetGetAllStartObjects())
+            {
+                if (!await start.Run().ConfigureAwait(false))
+                {
+                    failed = true;
+                    failedNames.AppendLine(start.UserGivenName);
+                }
+            }
+            return (failed, failedNames.ToString());
         }
     }
 }

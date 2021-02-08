@@ -19,6 +19,7 @@ namespace StartLauncher.PersistentSettings
         private static readonly string SETTING_FILE_PATH = $"{PERSISTENT_FOLDER_PATH}\\settings.json";
         private bool launchOnStartup = true;
         private int? shutdownTimerSeconds;
+        private ShutdownTimerPicker.ShutdownTimerAction shutdownTimerAction;
 
         public readonly List<StartObjects.StartApplication> startApps = new List<StartObjects.StartApplication>();
         public readonly List<StartObjects.StartUrl> startUrls = new List<StartObjects.StartUrl>();
@@ -31,6 +32,7 @@ namespace StartLauncher.PersistentSettings
         public List<LaunchProfiles.LaunchProfile> LaunchProfiles { get; set; }
         public string DefaultLaunchProfile { get; set; }
         public bool AutoUpdateCheck { get; set; }
+        public ShutdownTimerPicker.ShutdownTimerAction ShutdownTimerAction { get => shutdownTimerAction; set { shutdownTimerAction = value; SaveToFile(); } }
         /// <summary>
         /// This property is only for JSON serialization and should not be used to get or set the actual list
         /// </summary>
