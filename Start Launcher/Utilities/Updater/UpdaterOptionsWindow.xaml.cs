@@ -44,6 +44,10 @@ namespace StartLauncher.Utilities.Updater
                     App.CurrentApp.Shutdown();
                     return;
                 }
+                else
+                {
+                    return;
+                }
             }
             MessageBox.Show("No updates available", "Update check", MessageBoxButton.OK);
         }
