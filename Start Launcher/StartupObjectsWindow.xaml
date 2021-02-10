@@ -15,6 +15,7 @@
             <Button Margin="5" Content="Add application" x:Name="AddStartApp" Click="AddStartApp_Click"/>
             <Button Margin="5" Content="Add Store application" x:Name="AddStoreApp" Click="AddStoreApp_Click"/>
             <Button Margin="5" Content="Add url" x:Name="AddStartUrl" Click="AddStartUrl_Click"/>
+            <Button Margin="5" Content="Add process to kill" x:Name="AddKillProcess" Click="AddKillProcess_Click"/>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

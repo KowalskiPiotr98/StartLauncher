@@ -231,5 +231,15 @@ namespace StartLauncher
             StartAppsListView.Items.Refresh();
             StartAppsListView.SelectedIndex = -1;
         }
+
+        private void AddKillProcess_Click(object sender, RoutedEventArgs e)
+        {
+            var processKillSelect = new LaunchObjectsPickers.StartProcessKillerPickerWindow(_startObjectsManager);
+            var result = processKillSelect.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                HandleAddingItems();
+            }
+        }
     }
 }

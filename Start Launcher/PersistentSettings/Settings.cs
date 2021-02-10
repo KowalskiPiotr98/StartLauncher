@@ -23,6 +23,7 @@ namespace StartLauncher.PersistentSettings
 
         public readonly List<StartObjects.StartApplication> startApps = new List<StartObjects.StartApplication>();
         public readonly List<StartObjects.StartUrl> startUrls = new List<StartObjects.StartUrl>();
+        public readonly List<StartObjects.StartProcessKill> startProcessKills = new List<StartObjects.StartProcessKill>();
 
         /// <summary>
         /// Indicates whether the app should launch on system startup
@@ -38,6 +39,7 @@ namespace StartLauncher.PersistentSettings
         /// </summary>
         public List<StartObjects.StartApplication> StartAppsJSONProperty { get => startApps; set { startApps.Clear(); startApps.AddRange(value); } }
         public List<StartObjects.StartUrl> StartUrlsJSONProperty { get => startUrls; set { startUrls.Clear(); startUrls.AddRange(value); } }
+        public List<StartObjects.StartProcessKill> StartProcessKillsJSONProperty { get => startProcessKills; set { startProcessKills.Clear(); startProcessKills.AddRange(value); } }
 
         [JsonIgnore]
         public bool SkipSavingToFile { get; set; }
