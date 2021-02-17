@@ -34,6 +34,11 @@
                     <Button Margin="5" x:Name="OrderDown" Content="Down" Click="OrderDown_Click"/>
                     <Button Margin="5" x:Name="ObjectDelete" Content="Delete" Background="Red" Click="ObjectDelete_Click"/>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox x:Name="WaitForExit" VerticalAlignment="Center" Margin="5" ToolTip="Waits for an application to exit. Works only with some applications." Content="Wait for exit" Checked="WaitForExit_Checked" Unchecked="WaitForExit_Unchecked" IsChecked="{Binding Path=WaitForExit}"/>
+                    <Label Margin="5" Content="Timeout (ms):" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitForExitMsTimeout}" x:Name="WaitForExitTimeout" LostFocus="WaitForExitTimeout_LostFocus" Width="100" ToolTip="Set 0 to disable timeout"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>
