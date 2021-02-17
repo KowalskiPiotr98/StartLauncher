@@ -37,7 +37,11 @@ namespace StartLauncher.PersistentSettings.StartObjects
         {
             try
             {
-                _ = System.Diagnostics.Process.Start(Location);
+                var process = System.Diagnostics.Process.Start(Location);
+                if (WaitForExit)
+                {
+                    process.WaitForExit(WaitForExitMsTimeout == 0 ? -1 : WaitForExitMsTimeout);
+                }
                 return true;
             }
             catch (System.Exception)

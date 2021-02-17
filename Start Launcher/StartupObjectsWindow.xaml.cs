@@ -241,5 +241,47 @@ namespace StartLauncher
                 HandleAddingItems();
             }
         }
+
+        private async void WaitForExit_Checked(object sender, RoutedEventArgs e)
+        {
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            o.WaitForExit = true;
+            _startObjectsManager.SaveChanges();
+        }
+
+        private async void WaitForExit_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            o.WaitForExit = false;
+            _startObjectsManager.SaveChanges();
+        }
+
+        private async void WaitForExitTimeout_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int timeout))
+            {
+                o.WaitForExitMsTimeout = timeout;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Timeout must be a valid number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitForExitMsTimeout.ToString();
+            }
+        }
     }
 }

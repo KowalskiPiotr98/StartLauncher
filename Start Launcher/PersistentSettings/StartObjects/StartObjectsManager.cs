@@ -121,5 +121,12 @@ namespace StartLauncher.PersistentSettings.StartObjects
             }
             return (failed, failedNames.ToString());
         }
+
+        public Task<StartObject> GetStartObjectAtIndexAsync(int index) => Task.Run(() =>
+        {
+            return GetGetAllStartObjects().FirstOrDefault(o => o.LaunchOrder == index + 1);
+        });
+
+        public void SaveChanges() => _settings.SaveToFile();
     }
 }
