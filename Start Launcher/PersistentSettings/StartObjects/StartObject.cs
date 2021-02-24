@@ -24,6 +24,9 @@ namespace StartLauncher.PersistentSettings.StartObjects
         public bool WaitForExit { get; set; }
         public int WaitForExitMsTimeout { get; set; }
 
+        public int WaitBeforeLaunchMS { get; set; }
+        public int WaitAfterLaunchMS { get; set; }
+
         protected StartObject() { }
         protected StartObject(string location, int launchOrder)
         {

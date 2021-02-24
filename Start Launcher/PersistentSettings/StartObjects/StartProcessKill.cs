@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StartLauncher.PersistentSettings.StartObjects
@@ -21,6 +23,10 @@ namespace StartLauncher.PersistentSettings.StartObjects
         {
             var processes = Process.GetProcessesByName(Location);
             bool success = true;
+            if (WaitBeforeLaunchMS > 0)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(WaitBeforeLaunchMS));
+            }
             foreach (var item in processes)
             {
                 try
@@ -31,6 +37,10 @@ namespace StartLauncher.PersistentSettings.StartObjects
                 {
                     success = false;
                 }
+            }
+            if (WaitAfterLaunchMS > 0)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(WaitAfterLaunchMS));
             }
             return success;
         });
