@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StartLauncher.PersistentSettings.StartObjects
@@ -37,10 +39,19 @@ namespace StartLauncher.PersistentSettings.StartObjects
         {
             try
             {
+                if (WaitBeforeLaunchMS > 0)
+                {
+                    Thread.Sleep(TimeSpan.FromMilliseconds(WaitBeforeLaunchMS));
+                }
                 var process = System.Diagnostics.Process.Start(Location);
                 if (WaitForExit)
                 {
                     process.WaitForExit(WaitForExitMsTimeout == 0 ? -1 : WaitForExitMsTimeout);
+                }
+
+                if (WaitAfterLaunchMS > 0)
+                {
+                    Thread.Sleep(TimeSpan.FromMilliseconds(WaitAfterLaunchMS));
                 }
                 return true;
             }

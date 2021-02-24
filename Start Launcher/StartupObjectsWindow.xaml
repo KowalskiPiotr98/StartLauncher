@@ -39,6 +39,13 @@
                     <Label Margin="5" Content="Timeout (ms):" VerticalAlignment="Center"/>
                     <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitForExitMsTimeout}" x:Name="WaitForExitTimeout" LostFocus="WaitForExitTimeout_LostFocus" Width="100" ToolTip="Set 0 to disable timeout"/>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Margin="5" Content="Wait before action (ms):" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitBeforeLaunchMS}" x:Name="WaitBeforeChanged" LostFocus="WaitBeforeChanged_LostFocus" Width="100"/>
+                    <Label Margin="5" Content="Wait after action (ms):" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitAfterLaunchMS}" x:Name="WaitAfterChanged" LostFocus="WaitAfterChanged_LostFocus"  Width="100"/>
+                </StackPanel>
+                <Button HorizontalAlignment="Stretch" Content="Save"/>
             </StackPanel>
         </Grid>
     </Grid>

@@ -283,5 +283,45 @@ namespace StartLauncher
                 textBox.Text = o.WaitForExitMsTimeout.ToString();
             }
         }
+
+        private async void WaitBeforeChanged_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int waitTime))
+            {
+                o.WaitBeforeLaunchMS = waitTime;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Time must be a valid number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitBeforeLaunchMS.ToString();
+            }
+        }
+
+        private async void WaitAfterChanged_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int waitTime))
+            {
+                o.WaitAfterLaunchMS = waitTime;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Time must be a valid number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitAfterLaunchMS.ToString();
+            }
+        }
     }
 }
