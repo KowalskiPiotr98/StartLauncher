@@ -323,5 +323,49 @@ namespace StartLauncher
                 textBox.Text = o.WaitAfterLaunchMS.ToString();
             }
         }
+
+        private async void ProcessWaitName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            o.ProcessWaitName = textBox.Text;
+            _startObjectsManager.SaveChanges();
+        }
+
+        private async void ProcessWaitForExit_Checked(object sender, RoutedEventArgs e)
+        {
+            var checkbox = sender as CheckBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            o.ProcessWaitForExit = checkbox.IsChecked.Value;
+            _startObjectsManager.SaveChanges();
+        }
+
+        private async void ProcessWaitTimeoutMS_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int timeout))
+            {
+                o.ProcessWaitTimeoutMS = timeout;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Time must be a valid number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.ProcessWaitTimeoutMS.ToString();
+            }
+        }
     }
 }

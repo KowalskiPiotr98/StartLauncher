@@ -23,10 +23,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
         {
             var processes = Process.GetProcessesByName(Location);
             bool success = true;
-            if (WaitBeforeLaunchMS > 0)
-            {
-                Thread.Sleep(TimeSpan.FromMilliseconds(WaitBeforeLaunchMS));
-            }
+            CommonActionsBeforeLaunch();
             foreach (var item in processes)
             {
                 try
@@ -38,10 +35,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
                     success = false;
                 }
             }
-            if (WaitAfterLaunchMS > 0)
-            {
-                Thread.Sleep(TimeSpan.FromMilliseconds(WaitAfterLaunchMS));
-            }
+            CommonActionsAfterLaunch();
             return success;
         });
         internal override void AddListToSettings(Settings settings)

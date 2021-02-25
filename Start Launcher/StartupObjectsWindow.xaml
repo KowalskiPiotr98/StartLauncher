@@ -45,6 +45,13 @@
                     <Label Margin="5" Content="Wait after action (ms):" VerticalAlignment="Center"/>
                     <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitAfterLaunchMS}" x:Name="WaitAfterChanged" LostFocus="WaitAfterChanged_LostFocus"  Width="100"/>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Margin="5" Content="Wait for process:" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=ProcessWaitName}" x:Name="ProcessWaitName" Width="100" LostFocus="ProcessWaitName_LostFocus"/>
+                    <CheckBox Margin="5" VerticalAlignment="Center" Content="Wait for exit" ToolTip="If selected, the lauch will wait for selected process to exit, otherwise it will wait for it to start." x:Name="ProcessWaitForExit" Checked="ProcessWaitForExit_Checked" Unchecked="ProcessWaitForExit_Checked" IsChecked="{Binding Path=ProcessWaitForExit}"/>
+                    <Label Margin="5" Content="Timeout (ms):" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=ProcessWaitTimeoutMS}" x:Name="ProcessWaitTimeoutMS" Width="100" LostFocus="ProcessWaitTimeoutMS_LostFocus"/>
+                </StackPanel>
                 <Button HorizontalAlignment="Stretch" Content="Save"/>
             </StackPanel>
         </Grid>

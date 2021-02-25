@@ -41,15 +41,9 @@ namespace StartLauncher.PersistentSettings.StartObjects
                     FileName = Location,
                     UseShellExecute = true
                 };
-                if (WaitBeforeLaunchMS > 0)
-                {
-                    Thread.Sleep(TimeSpan.FromMilliseconds(WaitBeforeLaunchMS));
-                }
+                CommonActionsBeforeLaunch();
                 _ = Process.Start(psi);
-                if (WaitAfterLaunchMS > 0)
-                {
-                    Thread.Sleep(TimeSpan.FromMilliseconds(WaitAfterLaunchMS));
-                }
+                CommonActionsAfterLaunch();
                 return true;
             }
             catch (System.Exception)
