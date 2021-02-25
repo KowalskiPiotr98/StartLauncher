@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StartLauncher"
         mc:Ignorable="d"
-        Title="ShutdownTimerPicker" Height="125" Width="300" ResizeMode="NoResize">
+        Title="ShutdownTimerPicker" Height="175" Width="300" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
@@ -15,10 +15,15 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Label VerticalAlignment="Center" Content="Seconds to auto shutdown:"/>
         <TextBox x:Name="SecondsToShutdownText" Margin="5" Grid.Column="1" VerticalAlignment="Center"/>
         <CheckBox x:Name="Enabled" Content="Enabled" Grid.Row="1" Margin="5" Checked="Enabled_Checked" Unchecked="Enabled_Checked"/>
-        <Button x:Name="Confirm" Content="Save" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="5" Click="Confirm_Click"/>
+        <Label Grid.Row="2" Content="Timer finished action:"/>
+        <RadioButton Content="Quit" Margin="5" Grid.Row="3" GroupName="TimerAction" x:Name="TimerQuit" Checked="TimerQuit_Checked"/>
+        <RadioButton Content="Launch and quit" Margin="5" Grid.Row="3" Grid.Column="1" GroupName="TimerAction" x:Name="TimerLaunch" Checked="TimerLaunch_Checked"/>
+        <Button x:Name="Confirm" Content="Save" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="5" Click="Confirm_Click"/>
     </Grid>
 </Window>

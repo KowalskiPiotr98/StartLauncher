@@ -19,9 +19,11 @@ namespace StartLauncher.PersistentSettings
         private static readonly string SETTING_FILE_PATH = $"{PERSISTENT_FOLDER_PATH}\\settings.json";
         private bool launchOnStartup = true;
         private int? shutdownTimerSeconds;
+        private ShutdownTimerPicker.ShutdownTimerAction shutdownTimerAction;
 
         public readonly List<StartObjects.StartApplication> startApps = new List<StartObjects.StartApplication>();
         public readonly List<StartObjects.StartUrl> startUrls = new List<StartObjects.StartUrl>();
+        public readonly List<StartObjects.StartProcessKill> startProcessKills = new List<StartObjects.StartProcessKill>();
 
         /// <summary>
         /// Indicates whether the app should launch on system startup
@@ -31,11 +33,13 @@ namespace StartLauncher.PersistentSettings
         public List<LaunchProfiles.LaunchProfile> LaunchProfiles { get; set; }
         public string DefaultLaunchProfile { get; set; }
         public bool AutoUpdateCheck { get; set; }
+        public ShutdownTimerPicker.ShutdownTimerAction ShutdownTimerAction { get => shutdownTimerAction; set { shutdownTimerAction = value; SaveToFile(); } }
         /// <summary>
         /// This property is only for JSON serialization and should not be used to get or set the actual list
         /// </summary>
         public List<StartObjects.StartApplication> StartAppsJSONProperty { get => startApps; set { startApps.Clear(); startApps.AddRange(value); } }
         public List<StartObjects.StartUrl> StartUrlsJSONProperty { get => startUrls; set { startUrls.Clear(); startUrls.AddRange(value); } }
+        public List<StartObjects.StartProcessKill> StartProcessKillsJSONProperty { get => startProcessKills; set { startProcessKills.Clear(); startProcessKills.AddRange(value); } }
 
         [JsonIgnore]
         public bool SkipSavingToFile { get; set; }

@@ -10,4 +10,4 @@ Possible use cases include:
 
 # This is still just a pre-release. Expect bugs and ocasional breaking changes.
 
-MSI installator is included in the newest release.
+MSI installer is included in the newest release.

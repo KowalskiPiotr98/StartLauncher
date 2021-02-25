@@ -231,5 +231,201 @@ namespace StartLauncher
             StartAppsListView.Items.Refresh();
             StartAppsListView.SelectedIndex = -1;
         }
+
+        private void AddKillProcess_Click(object sender, RoutedEventArgs e)
+        {
+            var processKillSelect = new LaunchObjectsPickers.StartProcessKillerPickerWindow(_startObjectsManager);
+            var result = processKillSelect.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                HandleAddingItems();
+            }
+        }
+
+        private async void WaitForExit_Checked(object sender, RoutedEventArgs e)
+        {
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            o.WaitForExit = true;
+            _startObjectsManager.SaveChanges();
+        }
+
+        private async void WaitForExit_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            o.WaitForExit = false;
+            _startObjectsManager.SaveChanges();
+        }
+
+        private async void WaitForExitTimeout_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int timeout))
+            {
+                o.WaitForExitMsTimeout = timeout;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Timeout must be a valid number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitForExitMsTimeout.ToString();
+            }
+        }
+
+        private async void WaitBeforeChanged_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int waitTime))
+            {
+                o.WaitBeforeLaunchMS = waitTime;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Time must be a valid number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitBeforeLaunchMS.ToString();
+            }
+        }
+
+        private async void WaitAfterChanged_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int waitTime))
+            {
+                o.WaitAfterLaunchMS = waitTime;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Time must be a valid number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitAfterLaunchMS.ToString();
+            }
+        }
+
+        private async void ProcessWaitName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            o.ProcessWaitName = textBox.Text;
+            _startObjectsManager.SaveChanges();
+        }
+
+        private async void ProcessWaitForExit_Checked(object sender, RoutedEventArgs e)
+        {
+            var checkbox = sender as CheckBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            o.ProcessWaitForExit = checkbox.IsChecked.Value;
+            _startObjectsManager.SaveChanges();
+        }
+
+        private async void ProcessWaitTimeoutMS_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int timeout))
+            {
+                o.ProcessWaitTimeoutMS = timeout;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Time must be a valid number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.ProcessWaitTimeoutMS.ToString();
+            }
+        }
+
+        private async void WaitForIpAddress_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (System.Net.IPAddress.TryParse(textBox.Text, out _))
+            {
+                o.WaitForIpAddress = textBox.Text;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Invalid IPv4 address", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitForIpAddress.ToString();
+            }
+        }
+
+        private async void WaitForIpPort_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int port) && port > 0 && port < 65536)
+            {
+                o.WaitForIpPort = port;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Port must be a valid number in range [1,65535]", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitForIpPort.ToString();
+            }
+        }
+
+        private async void WaitForIpTimeoutMS_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int timeout))
+            {
+                o.WaitForIpTimeoutMS = timeout;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Time must be a valid number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitForIpTimeoutMS.ToString();
+            }
+        }
     }
 }

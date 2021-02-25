@@ -11,8 +11,9 @@ namespace StartLauncher.Utilities
         private readonly System.Windows.Threading.DispatcherTimer _timer;
         private readonly Controls.ProgressBarWithText _progresBar;
         private readonly App _app;
+        private readonly Action shutdownAction;
 
-        public ShutdownTimer(int secondsToShutdown, Controls.ProgressBarWithText progressBar, App app)
+        public ShutdownTimer(int secondsToShutdown, Controls.ProgressBarWithText progressBar, App app, ShutdownTimerPicker.ShutdownTimerAction action, PersistentSettings.StartObjects.StartObjectsManager startObjects)
         {
             AutoShutdownCancelled = false;
             timerSecondsRemaining = secondsToShutdown;
@@ -20,6 +21,17 @@ namespace StartLauncher.Utilities
             _app = app;
             _progresBar.Bar.Maximum = secondsToShutdown;
             _progresBar.Bar.Value = secondsToShutdown;
+            switch (action)
+            {
+                case ShutdownTimerPicker.ShutdownTimerAction.Quit:
+                    shutdownAction = () => _app.Shutdown();
+                    break;
+                case ShutdownTimerPicker.ShutdownTimerAction.LaunchAndQuit:
+                    shutdownAction = () => { startObjects.LaunchAllInCurrentProfile().Wait(); _app.Shutdown(); };
+                    break;
+                default:
+                    break;
+            }
             _timer = new System.Windows.Threading.DispatcherTimer
             {
                 Interval = System.TimeSpan.FromSeconds(1)
@@ -52,7 +64,7 @@ namespace StartLauncher.Utilities
             _progresBar.Bar.Value = timerSecondsRemaining;
             if (timerSecondsRemaining == 0 && !AutoShutdownCancelled)
             {
-                _app.Shutdown();
+                shutdownAction();
             }
         }
 

@@ -15,6 +15,7 @@
             <Button Margin="5" Content="Add application" x:Name="AddStartApp" Click="AddStartApp_Click"/>
             <Button Margin="5" Content="Add Store application" x:Name="AddStoreApp" Click="AddStoreApp_Click"/>
             <Button Margin="5" Content="Add url" x:Name="AddStartUrl" Click="AddStartUrl_Click"/>
+            <Button Margin="5" Content="Add process to kill" x:Name="AddKillProcess" Click="AddKillProcess_Click"/>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -33,6 +34,33 @@
                     <Button Margin="5" x:Name="OrderDown" Content="Down" Click="OrderDown_Click"/>
                     <Button Margin="5" x:Name="ObjectDelete" Content="Delete" Background="Red" Click="ObjectDelete_Click"/>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox x:Name="WaitForExit" VerticalAlignment="Center" Margin="5" ToolTip="Waits for an application to exit. Works only with some applications." Content="Wait for exit" Checked="WaitForExit_Checked" Unchecked="WaitForExit_Unchecked" IsChecked="{Binding Path=WaitForExit}"/>
+                    <Label Margin="5" Content="Timeout (ms):" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitForExitMsTimeout}" x:Name="WaitForExitTimeout" LostFocus="WaitForExitTimeout_LostFocus" Width="100" ToolTip="Set 0 to disable timeout"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Margin="5" Content="Wait before action (ms):" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitBeforeLaunchMS}" x:Name="WaitBeforeChanged" LostFocus="WaitBeforeChanged_LostFocus" Width="100"/>
+                    <Label Margin="5" Content="Wait after action (ms):" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitAfterLaunchMS}" x:Name="WaitAfterChanged" LostFocus="WaitAfterChanged_LostFocus"  Width="100"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Margin="5" Content="Wait for process:" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=ProcessWaitName}" x:Name="ProcessWaitName" Width="100" LostFocus="ProcessWaitName_LostFocus"/>
+                    <CheckBox Margin="5" VerticalAlignment="Center" Content="Wait for exit" ToolTip="If selected, the lauch will wait for selected process to exit, otherwise it will wait for it to start." x:Name="ProcessWaitForExit" Checked="ProcessWaitForExit_Checked" Unchecked="ProcessWaitForExit_Checked" IsChecked="{Binding Path=ProcessWaitForExit}"/>
+                    <Label Margin="5" Content="Timeout (ms):" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=ProcessWaitTimeoutMS}" x:Name="ProcessWaitTimeoutMS" Width="100" LostFocus="ProcessWaitTimeoutMS_LostFocus"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Margin="5" Content="Wait for IP:" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitForIpAddress}" x:Name="WaitForIpAddress" Width="100" LostFocus="WaitForIpAddress_LostFocus"/>
+                    <Label Margin="5" Content="port:" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitForIpPort}" x:Name="WaitForIpPort" Width="50" LostFocus="WaitForIpPort_LostFocus"/>
+                    <Label Margin="5" Content="Timeout (ms):" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitForIpTimeoutMS}" x:Name="WaitForIpTimeoutMS" Width="100" LostFocus="WaitForIpTimeoutMS_LostFocus"/>
+                </StackPanel>
+                <Button HorizontalAlignment="Stretch" Content="Save"/>
             </StackPanel>
         </Grid>
     </Grid>

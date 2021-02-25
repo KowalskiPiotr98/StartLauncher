@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace StartLauncher.PersistentSettings.StartObjects
 {
@@ -16,11 +18,12 @@ namespace StartLauncher.PersistentSettings.StartObjects
 
         public List<StartObject> GetGetAllStartObjects()
         {
-            return _settings.startApps.Cast<StartObject>().Concat(_settings.startUrls.Cast<StartObject>()).Where(s => s.LaunchPofileId == CurrentProfileId).OrderBy(s => s.LaunchOrder).ToList();
+            return GetGetAllStartObjects(false);
         }
         public List<StartObject> GetGetAllStartObjects(bool ignoreProfile)
         {
-            return _settings.startApps.Cast<StartObject>().Concat(_settings.startUrls.Cast<StartObject>()).Where(s => ignoreProfile || s.LaunchPofileId == CurrentProfileId).OrderBy(s => s.LaunchOrder).ToList();
+            return _settings.startApps.Cast<StartObject>().Concat(_settings.startUrls.Cast<StartObject>()).Concat(_settings.startProcessKills.Cast<StartObject>())
+                .Where(s => ignoreProfile || s.LaunchPofileId == CurrentProfileId).OrderBy(s => s.LaunchOrder).ToList();
         }
         public void AddStartObject(StartObject startObject)
         {
@@ -51,6 +54,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
             }
             _settings.startApps.RemoveAll(a => a.LaunchPofileId == CurrentProfileId && a.LaunchOrder == order);
             _settings.startUrls.RemoveAll(a => a.LaunchPofileId == CurrentProfileId && a.LaunchOrder == order);
+            _settings.startProcessKills.RemoveAll(a => a.LaunchPofileId == CurrentProfileId && a.LaunchOrder == order);
             foreach (var apps in GetGetAllStartObjects().Where(l => l.LaunchOrder > order))
             {
                 apps.LaunchOrder--;
@@ -102,5 +106,27 @@ namespace StartLauncher.PersistentSettings.StartObjects
         {
             SwitchToProfile(launchProfile.Id);
         }
+
+        public async Task<(bool failed, string failedNames)> LaunchAllInCurrentProfile()
+        {
+            var failedNames = new StringBuilder();
+            bool failed = false;
+            foreach (var start in GetGetAllStartObjects())
+            {
+                if (!await start.Run().ConfigureAwait(false))
+                {
+                    failed = true;
+                    failedNames.AppendLine(start.UserGivenName);
+                }
+            }
+            return (failed, failedNames.ToString());
+        }
+
+        public Task<StartObject> GetStartObjectAtIndexAsync(int index) => Task.Run(() =>
+        {
+            return GetGetAllStartObjects().FirstOrDefault(o => o.LaunchOrder == index + 1);
+        });
+
+        public void SaveChanges() => _settings.SaveToFile();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StartLauncher.PersistentSettings.StartObjects
@@ -40,7 +41,9 @@ namespace StartLauncher.PersistentSettings.StartObjects
                     FileName = Location,
                     UseShellExecute = true
                 };
+                CommonActionsBeforeLaunch();
                 _ = Process.Start(psi);
+                CommonActionsAfterLaunch();
                 return true;
             }
             catch (System.Exception)

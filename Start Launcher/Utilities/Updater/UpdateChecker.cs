@@ -36,7 +36,7 @@ namespace StartLauncher.Utilities.Updater
             {
                 throw new UpdateException("Invalid release format");
             }
-            if (major > App.Major || minor > App.Minor || patch > App.Patch)
+            if ((patch > App.Patch && minor == App.Minor && major == App.Major) || (minor > App.Minor && major == App.Major) || major > App.Major)
             {
                 UpdateDownloadUrl = releaseModel.Assets.FirstOrDefault(u => u.Name == _gitHubReleaseAssetName)?.DownloadUrl;
                 if (UpdateDownloadUrl is null)

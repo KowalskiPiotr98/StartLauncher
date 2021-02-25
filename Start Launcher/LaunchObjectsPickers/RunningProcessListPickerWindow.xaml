@@ -1,0 +1,23 @@
+﻿<Window x:Name="Window" x:Class="StartLauncher.LaunchObjectsPickers.RunningProcessListPickerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StartLauncher.LaunchObjectsPickers"
+        mc:Ignorable="d"
+        Title="Running Processes" Height="450" Width="800">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <ListView x:Name="ProcessesListView" ItemsSource="{Binding ElementName=Window, Path=ProcessNames}" SelectionMode="Single">
+            <ListView.Resources>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                </Style>
+            </ListView.Resources>
+        </ListView>
+        <Button Grid.Row="1" HorizontalAlignment="Right" x:Name="Cancel" Content="Cancel" Margin="5" Click="Cancel_Click"/>
+    </Grid>
+</Window>
