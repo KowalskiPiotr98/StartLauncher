@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StartLauncher.PersistentSettings.StartObjects
@@ -21,6 +23,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
         {
             var processes = Process.GetProcessesByName(Location);
             bool success = true;
+            CommonActionsBeforeLaunch();
             foreach (var item in processes)
             {
                 try
@@ -32,6 +35,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
                     success = false;
                 }
             }
+            CommonActionsAfterLaunch();
             return success;
         });
         internal override void AddListToSettings(Settings settings)
