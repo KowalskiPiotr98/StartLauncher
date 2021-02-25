@@ -367,5 +367,65 @@ namespace StartLauncher
                 textBox.Text = o.ProcessWaitTimeoutMS.ToString();
             }
         }
+
+        private async void WaitForIpAddress_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (System.Net.IPAddress.TryParse(textBox.Text, out _))
+            {
+                o.WaitForIpAddress = textBox.Text;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Invalid IPv4 address", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitForIpAddress.ToString();
+            }
+        }
+
+        private async void WaitForIpPort_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int port) && port > 0 && port < 65536)
+            {
+                o.WaitForIpPort = port;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Port must be a valid number in range [1,65535]", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitForIpPort.ToString();
+            }
+        }
+
+        private async void WaitForIpTimeoutMS_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var o = await _startObjectsManager.GetStartObjectAtIndexAsync(StartAppsListView.SelectedIndex);
+            if (o is null)
+            {
+                return;
+            }
+            if (int.TryParse(textBox.Text, out int timeout))
+            {
+                o.WaitForIpTimeoutMS = timeout;
+                _startObjectsManager.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Time must be a valid number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Information);
+                textBox.Text = o.WaitForIpTimeoutMS.ToString();
+            }
+        }
     }
 }

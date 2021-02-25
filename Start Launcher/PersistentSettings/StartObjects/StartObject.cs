@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,6 +35,10 @@ namespace StartLauncher.PersistentSettings.StartObjects
         public string ProcessWaitName { get; set; }
         public int ProcessWaitTimeoutMS { get; set; }
         public bool ProcessWaitForExit { get; set; }
+
+        public string WaitForIpAddress { get; set; }
+        public int WaitForIpPort { get; set; } = 443;
+        public int WaitForIpTimeoutMS { get; set; }
 
         protected StartObject() { }
         protected StartObject(string location, int launchOrder)
@@ -77,6 +83,11 @@ namespace StartLauncher.PersistentSettings.StartObjects
             {
                 WaitForProcessLaunch();
             }
+            //Wait for port
+            if (!string.IsNullOrWhiteSpace(WaitForIpAddress) && IPAddress.TryParse(WaitForIpAddress, out _) && WaitForIpPort > 0 && WaitForIpPort < 65536)
+            {
+                WaitForIpAddressConnection();
+            }
         }
         protected void CommonActionsAfterLaunch()
         {
@@ -86,6 +97,38 @@ namespace StartLauncher.PersistentSettings.StartObjects
             }
         }
 
+        private void WaitForIpAddressConnection()
+        {
+            var timer = new Stopwatch();
+            timer.Start();
+            using var client = new TcpClient();
+            var result = client.BeginConnect(WaitForIpAddress, WaitForIpPort, null, null);
+            while (true)
+            {
+                var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(0.1));
+                if (success)
+                {
+                    if (!client.Connected)
+                    {
+                        result = client.BeginConnect(WaitForIpAddress, WaitForIpPort, null, null);
+                        continue;
+                    }
+                    return;
+                }
+                if (WaitForIpTimeoutMS > 0 && timer.ElapsedMilliseconds > WaitForIpTimeoutMS)
+                {
+                    try
+                    {
+                        client.EndConnect(result);
+                    }
+                    catch (Exception)
+                    {
+                        //Close just for good measure if you can
+                    }
+                    return;
+                }
+            }
+        }
 
         private void WaitForProcessLaunch()
         {

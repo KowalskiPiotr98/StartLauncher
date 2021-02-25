@@ -52,6 +52,14 @@
                     <Label Margin="5" Content="Timeout (ms):" VerticalAlignment="Center"/>
                     <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=ProcessWaitTimeoutMS}" x:Name="ProcessWaitTimeoutMS" Width="100" LostFocus="ProcessWaitTimeoutMS_LostFocus"/>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Margin="5" Content="Wait for IP:" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitForIpAddress}" x:Name="WaitForIpAddress" Width="100" LostFocus="WaitForIpAddress_LostFocus"/>
+                    <Label Margin="5" Content="port:" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitForIpPort}" x:Name="WaitForIpPort" Width="50" LostFocus="WaitForIpPort_LostFocus"/>
+                    <Label Margin="5" Content="Timeout (ms):" VerticalAlignment="Center"/>
+                    <TextBox VerticalAlignment="Center" Margin="5" Text="{Binding Path=WaitForIpTimeoutMS}" x:Name="WaitForIpTimeoutMS" Width="100" LostFocus="WaitForIpTimeoutMS_LostFocus"/>
+                </StackPanel>
                 <Button HorizontalAlignment="Stretch" Content="Save"/>
             </StackPanel>
         </Grid>
