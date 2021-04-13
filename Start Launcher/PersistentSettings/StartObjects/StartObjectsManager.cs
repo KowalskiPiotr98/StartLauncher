@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StartLauncher.PersistentSettings.StartObjects
@@ -8,6 +9,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
     public class StartObjectsManager
     {
         private readonly Settings _settings;
+        private CancellationTokenSource cancellationToken;
         public string CurrentProfileId { get; private set; }
 
         public StartObjectsManager(Settings settings)
@@ -106,13 +108,23 @@ namespace StartLauncher.PersistentSettings.StartObjects
         {
             SwitchToProfile(launchProfile.Id);
         }
+        public void CancelLaunch()
+        {
+            cancellationToken.Cancel();
+        }
 
         public async Task<(bool failed, string failedNames)> LaunchAllInCurrentProfile()
         {
+            cancellationToken = new CancellationTokenSource();
             var failedNames = new StringBuilder();
             bool failed = false;
             foreach (var start in GetGetAllStartObjects())
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    failed = true;
+                    break;
+                }
                 if (!await start.Run().ConfigureAwait(false))
                 {
                     failed = true;

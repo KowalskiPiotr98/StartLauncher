@@ -15,6 +15,8 @@ namespace StartLauncher
         private readonly PersistentSettings.LaunchProfiles.LaunchProfileManager _launchProfileManager;
 
         private static bool firstLaunch = true;
+        private bool launching = false;
+        private object launchingMutex = new object();
 
         public MainWindow()
         {
@@ -44,19 +46,37 @@ namespace StartLauncher
 
         private async void LaunchButton_Click(object sender, RoutedEventArgs e)
         {
+            lock (launchingMutex)
+            {
+                if (!launching)
+                {
+                    launching = true;
+                }
+                else
+                {
+                    _startObjectsManager.CancelLaunch();
+                    IsEnabled = false;
+                    return;
+                }
+            }
             App.CurrentApp.CancelShutdownTimer();
-            IsEnabled = false;
-            Hide();
+            LaunchButton.Content = "Cancel";
+            ProfileDown.IsEnabled = ProfileUp.IsEnabled = false;
             var (failed, failedNames) = await _startObjectsManager.LaunchAllInCurrentProfile();
             if (failed)
             {
                 MessageBox.Show($"Some programs failed to launch:\n{failedNames}", "Launch failed", MessageBoxButton.OK, MessageBoxImage.Warning);
                 IsEnabled = true;
-                Show();
+                LaunchButton.Content = "Launch";
+                ProfileDown.IsEnabled = ProfileUp.IsEnabled = true;
             }
             else
             {
                 Application.Current.Shutdown();
+            }
+            lock (launchingMutex)
+            {
+                launching = false;
             }
         }
 
