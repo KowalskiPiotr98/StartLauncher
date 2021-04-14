@@ -1,4 +1,4 @@
-# Start Launcher
+# Start Launcher [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=KowalskiPiotr98_StartLauncher&metric=alert_status)](https://sonarcloud.io/dashboard?id=KowalskiPiotr98_StartLauncher)
 This is an early version of a program designed to launch application and websites on button press.
 It can be run on Windows boot and then turned on manually later.
 At this stage, applications and websites can be added and run with a single button press.
