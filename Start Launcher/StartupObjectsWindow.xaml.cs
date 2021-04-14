@@ -12,7 +12,7 @@ namespace StartLauncher
     {
         public PersistentSettings.Settings Settings { get; set; }
         private readonly PersistentSettings.StartObjects.StartObjectsManager _startObjectsManager;
-        public ObservableCollection<PersistentSettings.StartObjects.StartObject> StartObjects => new ObservableCollection<PersistentSettings.StartObjects.StartObject>(_startObjectsManager.GetGetAllStartObjects());
+        public ObservableCollection<PersistentSettings.StartObjects.StartObject> StartObjects => new ObservableCollection<PersistentSettings.StartObjects.StartObject>(_startObjectsManager.GetAllStartObjects());
         public StartupObjectsWindow()
         {
             InitializeComponent();
@@ -157,7 +157,7 @@ namespace StartLauncher
             {
                 OrderUp.IsEnabled = true;
             }
-            if (view.SelectedIndex == _startObjectsManager.GetGetAllStartObjects().Count - 1)
+            if (view.SelectedIndex == _startObjectsManager.GetAllStartObjects().Count - 1)
             {
                 OrderDown.IsEnabled = false;
             }
