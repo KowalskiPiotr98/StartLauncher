@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using StartLauncher.Utilities;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -182,6 +183,26 @@ namespace StartLauncher
                     }
                     App.CurrentApp.PauseShutdownTimer(false);
                 }
+            }
+        }
+
+        private void MoveToShellStartup_Click(object sender, RoutedEventArgs e)
+        {
+            var mbox = MessageBox.Show("This will move all applications from current profile to shell:startup. Are you sure you want to continue?", "shell:startup move", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (mbox == MessageBoxResult.Yes)
+            {
+                var mover = new ShellStartupMover(_startObjectsManager);
+                mover.MoveAllApplicationsToShellStartup();
+            }
+        }
+
+        private void MoveFromShellStartup_Click(object sender, RoutedEventArgs e)
+        {
+            var mbox = MessageBox.Show("This will move all applications from shell:startup to current profile. Are you sure you want to continue?", "shell:startup move", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (mbox == MessageBoxResult.Yes)
+            {
+                var mover = new ShellStartupMover(_startObjectsManager);
+                mover.MoveAllApplicationsFromShellStartup();
             }
         }
     }

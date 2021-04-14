@@ -18,7 +18,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
             CurrentProfileId = settings.DefaultLaunchProfile;
         }
 
-        public List<StartObject> GetGetAllStartObjects()
+        public List<StartObject> GetAllStartObjects()
         {
             return GetGetAllStartObjects(false);
         }
@@ -29,17 +29,17 @@ namespace StartLauncher.PersistentSettings.StartObjects
         }
         public void AddStartObject(StartObject startObject)
         {
-            if (GetGetAllStartObjects().Any(o => o.Location == startObject.Location))
+            if (GetAllStartObjects().Any(o => o.Location == startObject.Location))
             {
                 throw new System.ArgumentException("Object already exists", nameof(startObject));
             }
-            if (GetGetAllStartObjects().Count < startObject.LaunchOrder)
+            if (GetAllStartObjects().Count < startObject.LaunchOrder)
             {
-                startObject.LaunchOrder = GetGetAllStartObjects().Count + 1;
+                startObject.LaunchOrder = GetAllStartObjects().Count + 1;
             }
             else
             {
-                foreach (var presentStartObjects in GetGetAllStartObjects().Where(s => s.LaunchOrder >= startObject.LaunchOrder))
+                foreach (var presentStartObjects in GetAllStartObjects().Where(s => s.LaunchOrder >= startObject.LaunchOrder))
                 {
                     presentStartObjects.LaunchOrder++;
                 }
@@ -57,7 +57,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
             _settings.startApps.RemoveAll(a => a.LaunchPofileId == CurrentProfileId && a.LaunchOrder == order);
             _settings.startUrls.RemoveAll(a => a.LaunchPofileId == CurrentProfileId && a.LaunchOrder == order);
             _settings.startProcessKills.RemoveAll(a => a.LaunchPofileId == CurrentProfileId && a.LaunchOrder == order);
-            foreach (var apps in GetGetAllStartObjects().Where(l => l.LaunchOrder > order))
+            foreach (var apps in GetAllStartObjects().Where(l => l.LaunchOrder > order))
             {
                 apps.LaunchOrder--;
             }
@@ -73,7 +73,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
             {
                 throw new System.ArgumentOutOfRangeException(nameof(newIndex));
             }
-            var allObjects = GetGetAllStartObjects();
+            var allObjects = GetAllStartObjects();
             if (oldIndex > allObjects.Count)
             {
                 throw new System.ArgumentOutOfRangeException(nameof(oldIndex));
@@ -118,7 +118,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
             cancellationToken = new CancellationTokenSource();
             var failedNames = new StringBuilder();
             bool failed = false;
-            foreach (var start in GetGetAllStartObjects())
+            foreach (var start in GetAllStartObjects())
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -136,7 +136,7 @@ namespace StartLauncher.PersistentSettings.StartObjects
 
         public Task<StartObject> GetStartObjectAtIndexAsync(int index) => Task.Run(() =>
         {
-            return GetGetAllStartObjects().FirstOrDefault(o => o.LaunchOrder == index + 1);
+            return GetAllStartObjects().FirstOrDefault(o => o.LaunchOrder == index + 1);
         });
 
         public void SaveChanges() => _settings.SaveToFile();

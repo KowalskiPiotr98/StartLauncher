@@ -13,7 +13,7 @@ namespace StartLauncher.LaunchObjectsPickers
         public PersistentSettings.StartObjects.StartApplication StartApplication { get; private set; }
         public StoreAppsPicker(PersistentSettings.StartObjects.StartObjectsManager startObjectsManager)
         {
-            _appsManager = new PersistentSettings.StoreAppsManager(startObjectsManager.GetGetAllStartObjects().Where(s => s is PersistentSettings.StartObjects.StartApplication).Select(s => s.Location));
+            _appsManager = new PersistentSettings.StoreAppsManager(startObjectsManager.GetAllStartObjects().Where(s => s is PersistentSettings.StartObjects.StartApplication).Select(s => s.Location));
             InitializeComponent();
         }
 
