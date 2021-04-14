@@ -47,7 +47,7 @@ namespace StartLauncher.Utilities
             }
         }
 
-        private string GetShortcutTarget(string file) // lol (as per: https://www.kittell.net/code/windows-shortcut-lnk-details/)
+        private static string GetShortcutTarget(string file) // lol (as per: https://www.kittell.net/code/windows-shortcut-lnk-details/)
         {
             try
             {
