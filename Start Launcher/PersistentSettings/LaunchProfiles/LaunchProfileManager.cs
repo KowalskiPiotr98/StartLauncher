@@ -15,6 +15,7 @@ namespace StartLauncher.PersistentSettings.LaunchProfiles
 
         public List<LaunchProfile> GetAll() => _settings.LaunchProfiles;
         public LaunchProfile GetDefault() => FindById(_settings.DefaultLaunchProfile);
+        public LaunchProfile FindByName(string name) => GetAll().FirstOrDefault(l => l.Name == name);
         public LaunchProfile FindById(string id)
         {
             return _settings.LaunchProfiles.FirstOrDefault(l => l.Id == id);

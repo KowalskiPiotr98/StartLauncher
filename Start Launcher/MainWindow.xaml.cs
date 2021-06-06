@@ -1,5 +1,6 @@
 ﻿using StartLauncher.Utilities;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -35,8 +36,33 @@ namespace StartLauncher
             _launchProfileManager = new PersistentSettings.LaunchProfiles.LaunchProfileManager(Settings);
             InitializeComponent();
             SetProfileName();
+            SetProfileMenuItems();
             App.CurrentApp.SetTimer(Settings.ShutdownTimerSeconds, ShutdownProgressBar, Settings.ShutdownTimerAction, _startObjectsManager);
             LaunchOnStartup.IsChecked = Settings.LaunchOnStartup;
+        }
+
+        private void SetProfileMenuItems()
+        {
+            foreach (var profile in _launchProfileManager.GetAll())
+            {
+                var menuItem = new MenuItem
+                {
+                    Header = profile.Name
+                };
+                menuItem.Click += SetActiveProfileFromMenuItem;
+                ProfilesOptions.Items.Add(menuItem);
+            }
+        }
+
+        private void SetActiveProfileFromMenuItem(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var profile = _launchProfileManager.FindByName(menuItem.Header as string);
+            if (profile != null)
+            {
+                _startObjectsManager.SwitchToProfile(profile);
+                SetProfileName();
+            }
         }
 
         private void LaunchOnStartup_Click(object sender, RoutedEventArgs e)
@@ -46,6 +72,18 @@ namespace StartLauncher
         }
 
         private async void LaunchButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Launch(exit: true);
+        }
+
+        private void ModLaunchApps_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new StartupObjectsWindow(Settings, _startObjectsManager);
+            settingsWindow.Show();
+            Close();
+        }
+
+        private async Task Launch(bool exit)
         {
             lock (launchingMutex)
             {
@@ -61,31 +99,28 @@ namespace StartLauncher
                 }
             }
             App.CurrentApp.CancelShutdownTimer();
-            LaunchButton.Content = "Cancel";
-            ProfileDown.IsEnabled = ProfileUp.IsEnabled = false;
+            SwitchDisplay(launchingDisplay: true);
             var (failed, failedNames) = await _startObjectsManager.LaunchAllInCurrentProfile();
             if (failed)
             {
                 MessageBox.Show($"Some programs failed to launch:\n{failedNames}", "Launch failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-                IsEnabled = true;
-                LaunchButton.Content = "Launch";
-                ProfileDown.IsEnabled = ProfileUp.IsEnabled = true;
+                
             }
             else
             {
-                Application.Current.Shutdown();
+                if (exit)
+                {
+                    Application.Current.Shutdown();
+                }
+                else
+                {
+                    SwitchDisplay(launchingDisplay: false);
+                }
             }
             lock (launchingMutex)
             {
                 launching = false;
             }
-        }
-
-        private void ModLaunchApps_Click(object sender, RoutedEventArgs e)
-        {
-            var settingsWindow = new StartupObjectsWindow(Settings, _startObjectsManager);
-            settingsWindow.Show();
-            Close();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -203,6 +238,27 @@ namespace StartLauncher
             {
                 var mover = new ShellStartupMover(_startObjectsManager);
                 mover.MoveAllApplicationsFromShellStartup();
+            }
+        }
+        private async void LaunchNoExit_Click(object sender, RoutedEventArgs e)
+        {
+            await Launch(exit: false);
+        }
+
+        private void SwitchDisplay(bool launchingDisplay)
+        {
+            if (launchingDisplay)
+            {
+                LaunchButton.Content = "Cancel";
+                LaunchNoExit.IsEnabled = false;
+                ProfileDown.IsEnabled = ProfileUp.IsEnabled = false;
+            }
+            else
+            {
+                IsEnabled = true;
+                LaunchButton.Content = "Launch and exit";
+                LaunchNoExit.IsEnabled = true;
+                ProfileDown.IsEnabled = ProfileUp.IsEnabled = true;
             }
         }
     }
