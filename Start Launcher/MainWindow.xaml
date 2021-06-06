@@ -15,6 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
@@ -32,14 +33,18 @@
                 <MenuItem Header="Move to shell:startup" x:Name="MoveToShellStartup" Click="MoveToShellStartup_Click"/>
                 <MenuItem Header="Move from shell:startup" x:Name="MoveFromShellStartup" Click="MoveFromShellStartup_Click"/>
             </MenuItem>
+            <MenuItem Margin="5,0,5,0" Header="Profiles" x:Name="ProfilesOptions">
+                
+            </MenuItem>
         </Menu>
-        <Button Grid.Row="1" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="Launch" Name="LaunchButton" Click="LaunchButton_Click"/>
-        <Grid Grid.Row="2" Margin="5,0,5,5">
+        <Button Grid.Row="1" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="Launch and exit" Name="LaunchButton" Click="LaunchButton_Click"/>
+        <Button Grid.Row="2" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="Launch and continue" Name="LaunchNoExit" Click="LaunchNoExit_Click"/>
+        <Grid Grid.Row="3" Margin="5,0,5,5">
             <Button HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" x:Name="ShutdownCancelButton" Click="ShutdownCancelButton_Click">
                 <controls:ProgressBarWithText x:Name="ShutdownProgressBar"/>
             </Button>
         </Grid>
-        <Grid Grid.Row="3" Margin="5,0,5,5">
+        <Grid Grid.Row="4" Margin="5,0,5,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="4*"/>
