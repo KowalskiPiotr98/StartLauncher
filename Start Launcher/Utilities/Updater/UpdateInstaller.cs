@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace StartLauncher.Utilities.Updater
@@ -16,7 +17,7 @@ namespace StartLauncher.Utilities.Updater
 
         private static async Task<bool> TryStartInstallerInternalAsync(UpdateChecker checker)
         {
-            var tempPath = System.IO.Path.GetTempFileName();
+            var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             using var client = new GitHubWebClient();
             try
             {
@@ -24,21 +25,21 @@ namespace StartLauncher.Utilities.Updater
             }
             catch (UriFormatException)
             {
-                System.IO.File.Delete(tempPath);
+                File.Delete(tempPath);
                 return false;
             }
             try
             {
-                System.IO.File.Move(tempPath, $"{tempPath}.msi");
+                File.Move(tempPath, $"{tempPath}.msi");
                 tempPath += ".msi";
                 var p = new System.Diagnostics.Process();
                 p.StartInfo.FileName = tempPath;
                 p.StartInfo.UseShellExecute = true;
-                p.Start();
+                _ = p.Start();
             }
             catch (Exception)
             {
-                System.IO.File.Delete(tempPath);
+                File.Delete(tempPath);
                 return false;
             }
             return true;
